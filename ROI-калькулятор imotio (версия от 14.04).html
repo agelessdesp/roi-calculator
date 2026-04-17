@@ -1,0 +1,1479 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ROI-калькулятор | imot.io</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<style>
+:root{--p:#B37FEB;--pd:#9254DE;--pl:#D3ADF7;--ok:#10b981;--w:#f59e0b;--g1:#f3f4f6;--g2:#e5e7eb;--g4:#9ca3af;--g5:#6b7280;--g6:#4b5563;--g8:#1f2937}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#EEF2F6,#f5f0ff,#fdf2f8);min-height:100vh;color:var(--g8);line-height:1.5;font-size:13px}
+.c{max-width:1280px;margin:0 auto;padding:16px}
+header{text-align:center;margin-bottom:20px;padding:20px;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.logo{font-size:26px;font-weight:700}.logo b{color:#2D2A3E}.logo i{background:linear-gradient(135deg,#B37FEB,#D3ADF7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-style:normal}
+header p{color:var(--g5);font-size:13px;margin-top:4px}
+.rs{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.rb{padding:8px 14px;border:2px solid var(--g2);border-radius:18px;background:#fff;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit}
+.rb:hover{border-color:var(--pl);background:#faf8ff}.rb.a{border-color:var(--p);background:linear-gradient(135deg,#f5f0ff,#ede4ff);color:var(--pd)}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:900px){.g{grid-template-columns:1fr}}
+.cd{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);overflow:hidden;margin-bottom:16px}
+.ch{padding:14px 18px;border-bottom:1px solid var(--g1);display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s}
+.ch:hover{background:#f9fafb}
+.ch .arr{margin-left:auto;transition:transform .2s;color:var(--g4)}
+.ch.collapsed .arr{transform:rotate(-90deg)}
+.cb{padding:16px}
+.cd.collapsed .cb{display:none}
+.ic{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.ip{background:#f5f0ff}.ig{background:#ecfdf5}.io{background:#fff7ed}
+.fg{margin-bottom:14px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:500px){.fr{grid-template-columns:1fr}}
+label{display:flex;font-size:11px;font-weight:500;color:var(--g6);margin-bottom:4px;align-items:center;gap:4px}
+input,select{width:100%;padding:9px 11px;border:1px solid var(--g2);border-radius:6px;font-size:12px;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:var(--p);box-shadow:0 0 0 2px rgba(179,127,235,.15)}
+.hl{background:#fef3f2;border-color:#fecaca}
+.cv{padding:9px 11px;background:#f9fafb;border-radius:6px;font-size:12px;border:1px solid var(--g1)}.cv b{font-weight:600}
+.dv{margin:18px 0 10px;padding:8px 12px;background:#f9fafb;border-radius:6px;font-size:11px;font-weight:600;color:var(--g6)}
+.oh{margin:20px 0 10px;padding:10px;background:linear-gradient(135deg,#f5f0ff,#EEF2F6);border-radius:6px;border:1px solid var(--pl)}
+.oh b{font-size:12px;color:var(--pd)}.oh span{font-size:10px;color:var(--g5);display:block;margin-top:2px}
+.xh{padding:10px 14px;background:#f9fafb;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:500;color:var(--g6);border-top:1px solid var(--g1)}
+.xh:hover{background:var(--g1)}.xh .ar{transition:.2s}.xh.op .ar{transform:rotate(180deg)}
+.xh.hd{background:linear-gradient(135deg,#ecfdf5,#d1fae5)}
+.xh .bd{background:var(--ok);color:#fff;font-size:9px;padding:2px 5px;border-radius:8px;margin-left:5px}
+.xc{display:none;padding:14px;background:#f9fafb;border-top:1px solid var(--g1)}.xc.op{display:block}
+.xd{font-size:10px;color:var(--g5);margin-bottom:10px;padding:8px;background:#fff;border-radius:5px;border-left:2px solid var(--pl)}
+.xf{display:flex;justify-content:flex-end;margin-top:10px;padding-top:8px;border-top:1px solid var(--g2)}
+.xr{padding:4px 8px;border:1px solid var(--g4);border-radius:4px;background:#fff;font-size:10px;color:var(--g5);cursor:pointer}.xr:hover{border-color:#ef4444;color:#ef4444}
+.ts{display:flex;flex-direction:column;gap:6px}
+.to{padding:10px;border:2px solid var(--g2);border-radius:6px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.to:hover{border-color:var(--pl);background:#faf8ff}.to.s{border-color:var(--p);background:#f5f0ff}
+.tn{font-weight:600;font-size:12px}.tm{font-size:10px;color:var(--g5)}.tp{font-weight:700;color:var(--p);font-size:13px}
+.ps{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:10px}
+.po{padding:6px;border:2px solid var(--g2);border-radius:5px;cursor:pointer;text-align:center;position:relative}
+.po:hover{border-color:var(--pl)}.po.s{border-color:var(--p);background:#f5f0ff}
+.pl{font-weight:600;font-size:11px}.pds{font-size:9px;color:var(--ok);font-weight:600}
+.pdb{position:absolute;top:-5px;right:-5px;background:var(--ok);color:#fff;font-size:8px;font-weight:700;padding:1px 4px;border-radius:6px}
+.tsu{margin-top:10px;padding:10px;background:linear-gradient(135deg,#EEF2F6,#f5f0ff);border-radius:6px;border:1px solid var(--pl);font-size:11px}
+.tsr{display:flex;justify-content:space-between;padding:4px 0}.tsr.t{border-top:1px solid var(--pl);margin-top:5px;padding-top:7px;font-weight:700}.tsr .sv{color:var(--ok)}
+.cr{margin-top:10px;padding:12px;border-radius:6px;border:1px solid}
+.cr.ok{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#a7f3d0}
+.cr.wn{background:linear-gradient(135deg,#fffbeb,#fef3c7);border-color:#fcd34d}
+.cr b{font-size:12px;display:block;margin-bottom:4px}.cr.ok b{color:#047857}.cr.wn b{color:#b45309}
+.cr .rc{font-size:16px;font-weight:700}.cr.ok .rc{color:#047857}.cr.wn .rc{color:#b45309}
+.cr .dt{font-size:10px;color:var(--g6);margin-top:5px}
+.cr .cps{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:10px}
+.cr .cpo{padding:6px;border:2px solid var(--g2);border-radius:5px;cursor:pointer;text-align:center;position:relative;font-size:11px;transition:border-color .2s}
+.cr .cpo:hover{border-color:var(--pl)}.cr .cpo.s{border-color:var(--p);background:#f5f0ff}
+.cr .cpo .cpl{font-weight:600}.cr .cpo .cpd{font-size:9px;color:var(--ok);font-weight:600}
+.cr .cpb{position:absolute;top:-5px;right:-5px;background:var(--ok);color:#fff;font-size:8px;font-weight:700;padding:1px 4px;border-radius:6px}
+.cr .cpr{margin-top:10px;padding:10px;background:linear-gradient(135deg,#EEF2F6,#f5f0ff);border-radius:6px;border:1px solid var(--pl);font-size:11px}
+.cr .cpr .cprr{display:flex;justify-content:space-between;padding:3px 0}
+.cr .cpr .cprr.t{border-top:1px solid var(--pl);margin-top:4px;padding-top:6px;font-weight:700}
+.cr .cpr .sv{color:var(--ok)}
+.cr .cab{margin-top:10px;width:100%;padding:10px 14px;background:var(--p);color:#fff;border:none;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s}
+.cr .cab:hover{background:var(--pd)}
+.st{width:100%;border-collapse:collapse;font-size:11px}
+.st th{padding:8px 5px;text-align:center;font-weight:600;color:var(--g6);background:#f9fafb;border-bottom:1px solid var(--g2)}
+.st th:first-child{text-align:left}.st td{padding:6px 5px;text-align:center;border-bottom:1px solid var(--g1)}
+.st td:first-child{text-align:left;color:var(--g6);font-size:10px}.st input{width:55px;padding:5px;text-align:center;font-size:11px}
+.scc{color:var(--ok)}.scb{color:var(--p)}.sco{color:var(--w)}
+.sor{display:none}.sor.v{display:table-row}
+.pr{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.pb{padding:5px 10px;border:1px solid var(--g2);border-radius:12px;background:#fff;font-size:10px;cursor:pointer;font-family:inherit}
+.pb:hover{border-color:var(--p);color:var(--p)}.pb.a{background:var(--p);border-color:var(--p);color:#fff}
+.rg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}@media(max-width:600px){.rg{grid-template-columns:1fr}}
+.rc{padding:12px;border-radius:10px;text-align:center}
+.rc.cn{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid #a7f3d0}
+.rc.bs{background:linear-gradient(135deg,#f5f0ff,#ede4ff);border:1px solid var(--pl)}
+.rc.op{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fcd34d}
+.rc .lb{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.rc.cn .lb{color:#059669}.rc.bs .lb{color:var(--pd)}.rc.op .lb{color:#d97706}
+.rc .mv{font-size:18px;font-weight:700}.rc.cn .mv{color:#047857}.rc.bs .mv{color:#7c3aed}.rc.op .mv{color:#b45309}
+.rc .sb{font-size:10px;opacity:.8}.rc .mt{margin-top:6px;padding-top:6px;border-top:1px solid rgba(0,0,0,.1);font-size:9px;color:var(--g6)}
+.rc .pb{font-size:9px;color:var(--g5);margin-top:3px}
+.rm{padding:14px;border-radius:8px;margin-bottom:14px;border:2px solid}
+.rm.own{background:linear-gradient(135deg,#fdf4ff,#fae8ff);border-color:#e879f9}
+.rm.sal{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#60a5fa}
+.rm.mar{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#4ade80}
+.rm.com{background:linear-gradient(135deg,#fffbeb,#fef3c7);border-color:#fbbf24}
+.rmh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+.rm h4{font-size:12px;font-weight:600}.rm.own h4{color:#a855f7}.rm.sal h4{color:#3b82f6}.rm.mar h4{color:#22c55e}.rm.com h4{color:#f59e0b}
+.stg{display:flex;gap:3px}.stg button{padding:3px 8px;border:1px solid rgba(0,0,0,.1);border-radius:10px;background:rgba(255,255,255,.5);font-size:9px;cursor:pointer;font-family:inherit}
+.stg button:hover{background:rgba(255,255,255,.8)}.stg button.a{background:#fff;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.rk{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.rki{background:rgba(255,255,255,.7);padding:8px;border-radius:5px;text-align:center}
+.rki .kl{font-size:9px;color:var(--g5)}.rki .kv{font-size:14px;font-weight:700}
+.rm.own .kv{color:#a855f7}.rm.sal .kv{color:#3b82f6}.rm.mar .kv{color:#22c55e}.rm.com .kv{color:#f59e0b}
+.cpg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}
+.cpi{padding:8px;background:#fff;border-radius:5px;text-align:center;border:1px solid var(--g2)}
+.cpi.bf{border-left:3px solid var(--g4)}.cpi.af{border-left:3px solid var(--ok)}
+.cpl{font-size:9px;color:var(--g5)}.cpv{font-size:13px;font-weight:700}
+.cpi.bf .cpv{color:var(--g6)}.cpi.af .cpv{color:var(--ok)}.cpd{font-size:9px;color:var(--ok)}
+@media(max-width:500px){.cpg{grid-template-columns:1fr 1fr}}
+.cht{margin:12px 0;padding:12px;background:#f9fafb;border-radius:10px}
+.cht h4{font-size:11px;font-weight:600;color:var(--g6);margin-bottom:8px}.chw{height:160px}
+.chl{display:flex;flex-direction:column;gap:4px}
+.chk{display:flex;align-items:center;gap:5px;padding:6px 8px;border-radius:4px;font-size:10px}
+.chk.ps{background:#ecfdf5;color:#047857}.chk.fl{background:#fef2f2;color:#b91c1c}
+.dsc{margin:12px 0;padding:10px;background:linear-gradient(135deg,#fefce8,#fef9c3);border:1px solid #fde047;border-radius:6px;font-size:10px;color:#854d0e}
+.dsc strong{color:#713f12}
+.apt{margin-top:12px;padding:12px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fcd34d;border-radius:10px}
+.apt h4{font-size:11px;font-weight:600;color:#b45309;margin-bottom:6px}
+.apt .nt{font-size:9px;color:var(--g5);margin-bottom:6px;padding:4px;background:rgba(255,255,255,.5);border-radius:3px}
+.ptg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.pti{text-align:center;padding:6px;background:rgba(255,255,255,.7);border-radius:4px}
+.pti .ptl{font-size:8px;color:var(--g5)}.pti .ptv{font-size:12px;font-weight:700;color:#b45309}
+.btn{padding:8px 14px;border:none;border-radius:5px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit}
+.bp{background:var(--p);color:#fff}.bp:hover{background:var(--pd)}
+.bsc{background:var(--g1);color:var(--g6)}.bsc:hover{background:var(--g2)}
+.mc{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+textarea{width:100%;min-height:140px;padding:10px;border:1px solid var(--g2);border-radius:5px;font-size:11px;font-family:inherit;line-height:1.5;resize:vertical}
+textarea:focus{outline:none;border-color:var(--p)}
+.tst{position:fixed;bottom:16px;right:16px;padding:8px 14px;background:var(--g8);color:#fff;border-radius:5px;font-size:11px;opacity:0;transform:translateY(16px);transition:.3s;z-index:1000}.tst.sh{opacity:1;transform:translateY(0)}
+.mt12{margin-top:12px}
+.tbs{display:flex;gap:4px;margin-bottom:10px}
+.tb{padding:6px 10px;border:1px solid var(--g2);border-radius:4px;background:#fff;font-size:10px;cursor:pointer;font-family:inherit}
+.tb:hover{background:#f9fafb}.tb.a{background:var(--p);color:#fff;border-color:var(--p)}
+.tc{display:none}.tc.a{display:block}
+.tip{width:14px;height:14px;border-radius:50%;background:var(--pl);color:var(--pd);font-size:9px;display:inline-flex;align-items:center;justify-content:center;cursor:help;position:relative;font-weight:600}
+.tip:hover .tt{opacity:1;visibility:visible}
+.tt{position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:var(--g8);color:#fff;padding:6px 10px;border-radius:4px;font-size:10px;min-width:180px;max-width:220px;text-align:center;opacity:0;visibility:hidden;z-index:100;white-space:normal;line-height:1.4;font-weight:400}
+.msgc .ch{cursor:pointer}.msgc .ch:hover{background:#f9fafb}.msgc .cb{display:none}.msgc.opn .cb{display:block}
+.msgc .ch .ar{transition:.2s;margin-left:auto}.msgc.opn .ch .ar{transform:rotate(180deg)}
+/* Ramp-up таблица */
+.ramp-tbl{width:100%;border-collapse:collapse;font-size:10px;margin-top:10px}
+.ramp-tbl th,.ramp-tbl td{padding:6px 8px;text-align:center;border-bottom:1px solid var(--g2)}
+.ramp-tbl th{background:#f9fafb;font-weight:600;color:var(--g6)}
+.ramp-tbl th:first-child,.ramp-tbl td:first-child{text-align:center;width:60px}
+.ramp-tbl td:last-child{text-align:left;color:var(--g5);font-size:9px}
+.ramp-tbl .pct{font-weight:700;color:var(--pd)}
+/* Size buttons */
+.size-btns{display:flex;gap:6px;margin-bottom:10px}
+.size-btn{flex:1;padding:8px 6px;border:2px solid var(--g2);border-radius:6px;background:#fff;cursor:pointer;text-align:center;font-family:inherit;transition:all .2s}
+.size-btn:hover{border-color:var(--pl);background:#faf8ff}
+.size-btn.a{border-color:var(--p);background:#f5f0ff}
+.size-btn .sn{font-weight:600;font-size:10px;color:var(--g8)}
+.size-btn .sd{font-size:9px;color:var(--g5);margin-top:2px}
+.size-btn.a .sn{color:var(--pd)}
+/* Описание блока сценариев */
+.sc-desc{font-size:10px;color:var(--g5);margin-bottom:12px;padding:10px;background:#fff;border-radius:6px;border:1px solid var(--g2);line-height:1.5}
+/* Scenario selector cards */
+.sc-cards{display:flex;gap:6px;margin-bottom:10px}
+.sc-card{flex:1;padding:8px 6px;border:2px solid var(--g2);border-radius:8px;background:#fff;cursor:pointer;text-align:center;font-family:inherit;transition:all .2s}
+.sc-card:hover{border-color:var(--pl);background:#faf8ff}
+.sc-card.a{border-color:var(--p);background:#f5f0ff}
+.sc-card .sc-nm{font-weight:600;font-size:11px;color:var(--g8)}
+.sc-card .sc-sb{font-size:9px;color:var(--g5);margin-top:1px}
+.sc-card .sc-pb{font-size:9px;color:var(--ok);font-weight:600;margin-top:2px}
+.sc-card.a .sc-nm{color:var(--pd)}
+.sc-card[data-sc="0"].a{border-color:#34d399;background:linear-gradient(135deg,#ecfdf5,#d1fae5)}
+.sc-card[data-sc="0"].a .sc-nm{color:#047857}
+.sc-card[data-sc="0"].a .sc-pb{color:#059669}
+.sc-card[data-sc="2"].a{border-color:#fbbf24;background:linear-gradient(135deg,#fffbeb,#fef3c7)}
+.sc-card[data-sc="2"].a .sc-nm{color:#b45309}
+.sc-card[data-sc="2"].a .sc-pb{color:#d97706}
+/* Scenario detail panel */
+.sc-detail{margin-bottom:12px;padding:12px 14px;border-radius:8px;font-size:11px;line-height:1.6;border:1px solid;transition:all .25s}
+.sc-detail.s0{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#a7f3d0;color:#065f46}
+.sc-detail.s1{background:linear-gradient(135deg,#f5f0ff,#ede4ff);border-color:var(--pl);color:#5b21b6}
+.sc-detail.s2{background:linear-gradient(135deg,#fffbeb,#fef3c7);border-color:#fcd34d;color:#92400e}
+.sc-detail b{font-size:12px;display:block;margin-bottom:5px}
+.sc-detail ul{margin:0;padding-left:16px}.sc-detail li{margin-bottom:2px}
+/* Table column highlight */
+.st th.sc-hl,.st td.sc-hl{background:rgba(179,127,235,.08)}
+.stg button{position:relative}
+.stg .stt{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--g8);color:#fff;padding:8px 10px;border-radius:6px;font-size:10px;width:240px;text-align:left;opacity:0;visibility:hidden;z-index:100;white-space:normal;line-height:1.4;font-weight:400;pointer-events:none;transition:opacity .15s}
+.stg .stt::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--g8)}
+.stg button:hover .stt{opacity:1;visibility:visible}
+
+/* Pain personalization modal wizard */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+.modal-ov.vis{opacity:1;visibility:visible}
+.modal{background:#fff;border-radius:12px;max-width:560px;width:90%;max-height:90vh;overflow-y:auto;padding:28px 24px;box-shadow:0 12px 40px rgba(0,0,0,.18);position:relative;animation:mdlIn .25s ease}
+@keyframes mdlIn{from{transform:translateY(24px) scale(.97);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+.modal-cls{position:absolute;top:12px;right:12px;width:32px;height:32px;border:none;background:transparent;font-size:18px;cursor:pointer;color:var(--g5);border-radius:8px;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.modal-cls:hover{background:var(--g1);color:var(--g8)}
+.modal h3{font-size:17px;font-weight:600;text-align:center;margin-bottom:16px;color:var(--g8)}
+
+.wz-prog{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:20px}
+.wz-dot{width:10px;height:10px;border-radius:50%;background:var(--g2);transition:background .2s,box-shadow .2s;flex-shrink:0}
+.wz-dot.active{background:var(--p);box-shadow:0 0 0 3px rgba(179,127,235,.25)}
+.wz-dot.done{background:var(--pd)}
+.wz-line{width:24px;height:2px;background:var(--g2);flex-shrink:0}
+.wz-line.done{background:var(--pd)}
+
+.wz-step{display:none}
+.wz-step.vis{display:block}
+.wz-q{font-size:13px;font-weight:500;color:var(--g8);margin-bottom:12px}
+
+.pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pain-btn{display:flex;align-items:center;gap:8px;padding:10px 12px;border:2px solid var(--g2);border-radius:10px;background:#fff;cursor:pointer;transition:border-color .15s,background .15s;font-family:inherit;text-align:left;font-size:12px}
+.pain-btn:hover{border-color:var(--pl);background:#faf8ff}
+.pain-btn.sel{border-color:var(--p);background:linear-gradient(135deg,#f5f0ff,#ede4ff)}
+.pain-btn .pain-ic{font-size:18px;flex-shrink:0}
+.pain-btn .pain-lb{font-weight:500;color:var(--g8);line-height:1.3}
+
+.ctx-group{margin-bottom:14px}
+.ctx-group label{display:block;font-size:11px;font-weight:600;color:var(--g5);margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px}
+.ctx-opts{display:flex;flex-direction:column;gap:6px}
+.ctx-opt{padding:8px 12px;border:2px solid var(--g2);border-radius:8px;background:#fff;cursor:pointer;font-size:12px;font-family:inherit;text-align:left;transition:border-color .15s,background .15s}
+.ctx-opt:hover{border-color:var(--pl);background:#faf8ff}
+.ctx-opt.sel{border-color:var(--p);background:linear-gradient(135deg,#f5f0ff,#ede4ff);color:var(--pd);font-weight:500}
+
+.tried-grid{display:flex;flex-direction:column;gap:6px}
+.tried-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border:2px solid var(--g2);border-radius:8px;background:#fff;cursor:pointer;font-size:12px;font-family:inherit;text-align:left;transition:border-color .15s,background .15s}
+.tried-btn::before{content:'';width:16px;height:16px;border:2px solid var(--g2);border-radius:4px;flex-shrink:0;transition:background .15s,border-color .15s}
+.tried-btn:hover{border-color:var(--pl)}
+.tried-btn.sel{border-color:var(--p);background:#faf8ff}
+.tried-btn.sel::before{background:var(--pd);border-color:var(--pd);box-shadow:inset 0 0 0 2px #fff}
+
+.exp-grid{display:flex;flex-direction:column;gap:8px}
+.exp-btn{padding:12px 14px;border:2px solid var(--g2);border-radius:10px;background:#fff;cursor:pointer;font-family:inherit;text-align:left;transition:border-color .15s,background .15s}
+.exp-btn:hover{border-color:var(--pl);background:#faf8ff}
+.exp-btn.sel{border-color:var(--p);background:linear-gradient(135deg,#f5f0ff,#ede4ff)}
+.exp-btn .exp-t{font-size:12px;font-weight:600;color:var(--g8);margin-bottom:2px}
+.exp-btn .exp-d{font-size:11px;color:var(--g5);line-height:1.4}
+.exp-btn.sel .exp-t{color:var(--pd)}
+
+.wz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:12px}
+.wz-skip{padding:8px 16px;border:none;background:transparent;color:var(--g5);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;border-radius:8px;transition:background .15s}
+.wz-skip:hover{background:var(--g1)}
+.wz-next{padding:8px 20px;border:none;background:var(--p);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;border-radius:8px;transition:background .15s,opacity .15s;margin-left:auto}
+.wz-next:hover{background:var(--pd)}
+.wz-next:disabled{background:var(--g2);color:var(--g4);cursor:not-allowed}
+
+.pain-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 8px 3px 10px;background:linear-gradient(135deg,#f5f0ff,#ede4ff);border:1px solid var(--pl);border-radius:12px;font-size:11px;font-weight:500;color:var(--pd);margin:2px}
+.pain-tag button{border:none;background:transparent;color:var(--g4);font-size:14px;cursor:pointer;padding:0 2px;line-height:1;transition:color .15s}
+.pain-tag button:hover{color:var(--g8)}
+
+.rki-hl{background:linear-gradient(135deg,#faf5ff,#f3e8ff);border:1.5px solid var(--pl);border-radius:10px}
+.kbg{font-size:9px;font-weight:600;color:var(--pd);margin-top:4px}
+.pg-block{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);padding:16px 20px;margin-bottom:16px}
+.pg-block h4{font-size:13px;margin-bottom:10px;color:var(--g8)}
+.pg-item{padding:8px 0;border-bottom:1px solid var(--g1);font-size:12px;line-height:1.6}
+.pg-item:last-child{border-bottom:none}
+.pg-item b{color:var(--pd);font-weight:600}
+.pg-mv{display:flex;gap:4px;margin-top:3px;color:var(--g6);font-size:11px;flex-wrap:wrap}
+.pg-mv span{background:var(--g1);border-radius:6px;padding:1px 6px;white-space:nowrap}
+
+@media(max-width:600px){.pain-grid{grid-template-columns:1fr}.modal{width:100%;max-width:100%;max-height:100vh;border-radius:0;min-height:100vh}}
+/* PDF export */
+#pdfContent{position:absolute;left:-9999px;top:0;width:800px;background:#fff;font-family:'Inter',sans-serif;color:#1f2937;line-height:1.5;font-size:13px;overflow:visible}
+#pdfContent.pdf-vis{left:0;z-index:9999}
+#pdfContent h3{overflow:visible}
+.pdf-hdr{text-align:center;padding:18px 20px 12px;border-bottom:2px solid #B37FEB}
+.pdf-hdr .pdf-logo{font-size:28px;font-weight:700}.pdf-hdr .pdf-logo b{color:#2D2A3E}.pdf-hdr .pdf-logo i{color:#B37FEB;font-style:normal}
+.pdf-hdr .pdf-sub{font-size:12px;color:#6b7280;margin-top:4px}
+.pdf-hdr .pdf-comp{font-size:16px;font-weight:600;color:#1f2937;margin-top:8px}
+.pdf-hdr .pdf-date{font-size:10px;color:#9ca3af;margin-top:2px}
+.pdf-summary{display:flex;gap:6px;padding:10px 20px;background:#f9fafb;border-bottom:1px solid #e5e7eb;font-size:11px;flex-wrap:wrap}
+.pdf-summary .pdf-si{background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:6px 12px;flex:1;min-width:120px;text-align:center}
+.pdf-summary .pdf-si .pdf-sl{font-size:9px;color:#9ca3af;text-transform:uppercase;letter-spacing:.3px}.pdf-summary .pdf-si .pdf-sv{font-size:13px;font-weight:600;color:#1f2937}
+.pdf-section{padding:10px 20px}
+.pdf-section h3{font-size:13px;font-weight:600;margin-bottom:8px;color:#1f2937;padding-bottom:4px;border-bottom:1px solid #e5e7eb}
+.pdf-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.pdf-mi{padding:10px;border-radius:8px;text-align:center;border:1px solid}
+.pdf-mi .pdf-ml{font-size:9px;font-weight:500;color:#6b7280}.pdf-mi .pdf-mv{font-size:16px;font-weight:700}
+.pdf-mi.own{background:#fdf4ff;border-color:#e879f9}.pdf-mi.own .pdf-mv{color:#a855f7}
+.pdf-mi.sal{background:#eff6ff;border-color:#60a5fa}.pdf-mi.sal .pdf-mv{color:#3b82f6}
+.pdf-mi.mar{background:#f0fdf4;border-color:#4ade80}.pdf-mi.mar .pdf-mv{color:#22c55e}
+.pdf-mi.com{background:#fffbeb;border-color:#fbbf24}.pdf-mi.com .pdf-mv{color:#f59e0b}
+.pdf-scenarios{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+.pdf-sc{padding:12px;border-radius:10px;text-align:center}
+.pdf-sc.cn{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid #a7f3d0}
+.pdf-sc.bs{background:linear-gradient(135deg,#f5f0ff,#ede4ff);border:1px solid #D3ADF7}
+.pdf-sc.op{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fcd34d}
+.pdf-sc .pdf-scn{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px}
+.pdf-sc.cn .pdf-scn{color:#059669}.pdf-sc.bs .pdf-scn{color:#7c3aed}.pdf-sc.op .pdf-scn{color:#d97706}
+.pdf-sc .pdf-scv{font-size:18px;font-weight:700;margin-bottom:1px}
+.pdf-sc.cn .pdf-scv{color:#047857}.pdf-sc.bs .pdf-scv{color:#7c3aed}.pdf-sc.op .pdf-scv{color:#b45309}
+.pdf-sc .pdf-scs{font-size:10px;color:#6b7280}.pdf-sc .pdf-scd{font-size:9px;color:#9ca3af;margin-top:4px}
+.pdf-cmp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.pdf-ci{padding:8px;background:#fff;border-radius:6px;text-align:center;border:1px solid #e5e7eb}
+.pdf-ci.bf{border-left:3px solid #9ca3af}.pdf-ci.af{border-left:3px solid #10b981}
+.pdf-ci .pdf-cl{font-size:9px;color:#9ca3af}.pdf-ci .pdf-cv{font-size:13px;font-weight:700}
+.pdf-ci.bf .pdf-cv{color:#4b5563}.pdf-ci.af .pdf-cv{color:#10b981}
+.pdf-ci .pdf-cd{font-size:9px;color:#10b981}
+.pdf-sc.pdf-sc-sel{box-shadow:0 0 0 3px #B37FEB;transform:scale(1.03)}
+.pdf-sc:not(.pdf-sc-sel){opacity:.55}
+.pdf-chart{padding:10px;background:#f9fafb;border-radius:8px;margin-bottom:10px}
+.pdf-chart h4{font-size:11px;font-weight:600;color:#4b5563;margin-bottom:4px}
+.pdf-chart canvas{width:760px!important;height:160px!important}
+.pdf-chk{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.pdf-chk .pdf-ck{padding:5px 10px;border-radius:4px;font-size:10px;font-weight:500}
+.pdf-chk .pdf-ck.ps{background:#ecfdf5;color:#047857}.pdf-chk .pdf-ck.fl{background:#fef2f2;color:#b91c1c}
+.pdf-msg{padding:12px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;font-size:11px;line-height:1.6;white-space:pre-wrap;margin-bottom:10px}
+.pdf-disc{padding:8px 14px;background:#fefce8;border:1px solid #fde047;border-radius:6px;font-size:9px;color:#854d0e;margin-bottom:0}
+.pdf-disc strong{color:#713f12}
+.pdf-footer{text-align:center;padding:8px 20px;border-top:1px solid #e5e7eb;font-size:9px;color:#9ca3af}
+.pdf-sc-label{padding:8px 12px;background:linear-gradient(135deg,#f5f0ff,#ede4ff);border:1px solid #D3ADF7;border-radius:6px;font-size:11px;color:#7c3aed;font-weight:600;margin-bottom:8px;text-align:center}
+.pdf-pain-item{padding:6px 8px;border-bottom:1px solid #f3f4f6;font-size:11px;line-height:1.5}
+.pdf-pain-item:last-child{border-bottom:none}
+.pdf-pain-item b{color:#7c3aed}
+.pdf-pain-mv{display:flex;gap:4px;margin-top:2px;flex-wrap:wrap;font-size:10px;color:#6b7280}
+.pdf-pain-mv span{background:#f3f4f6;border-radius:4px;padding:1px 5px}
+.pdf-btn{padding:6px 14px;border:none;border-radius:5px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;background:#B37FEB;color:#fff;margin-left:auto}
+.pdf-btn:hover{background:#9254DE}
+</style>
+</head>
+<body>
+<div class="c">
+<header>
+<div class="logo"><b>imot</b><i>.io</i></div>
+<p>Калькулятор ROI для речевой аналитики</p>
+<div class="rs">
+<button class="rb a" data-r="own" onclick="selR('own')">👔 Собственник</button>
+<button class="rb" data-r="sal" onclick="selR('sal')">📞 РОП / Рук. КЦ</button>
+<button class="rb" data-r="mar" onclick="selR('mar')">📊 Дир. по маркетингу</button>
+<button class="rb" data-r="com" onclick="selR('com')">💼 Комм. директор</button>
+</div>
+</header>
+<div class="g">
+<div>
+<!-- Данные клиента -->
+<div class="cd" id="cdClient">
+<div class="ch" onclick="toggleCard('cdClient')"><div class="ic ip">📋</div>Данные клиента<span class="arr">▼</span></div>
+<div class="cb">
+<div class="fg"><label>Компания</label><input type="text" id="comp" placeholder="Для персонализации текстов"></div>
+<div class="dv">📈 Основные показатели</div>
+<div class="fr"><div class="fg"><label>Обращений/мес <span class="tip">?<span class="tt">Входящие коммуникации</span></span></label><input type="number" id="leads" placeholder="2000" class="hl"></div><div class="fg"><label>Конверсия, %</label><input type="number" id="conv" placeholder="25" class="hl"></div></div>
+<div class="fg"><label>Средний чек, ₽</label><input type="number" id="chk" placeholder="8000" class="hl"></div>
+<div class="fr mt12"><div class="fg"><label>Текущая выручка</label><div class="cv"><b id="curR">—</b></div></div><div class="fg"><label>Затраты/год</label><div class="cv"><b id="totC">—</b></div></div></div>
+<div class="oh"><b>📋 Опциональные расчёты</b><span>Для точности</span></div>
+
+<div class="xh" id="loH" onclick="togS('lo')"><span>🚫 Упущенные продажи <span class="bd" style="display:none">✓</span></span><span class="ar">▼</span></div>
+<div class="xc" id="loC"><div class="xd">Сколько лидов теряем сейчас из-за ошибок операторов (типично 10-15% от всех обращений). Прямое влияние на конверсию.</div><div class="fg"><label>% упущенных</label><input type="number" id="loP" placeholder="12"></div><div class="xf"><button class="xr" onclick="resS('lo')">Сбросить</button></div></div>
+<div class="xh" id="upH" onclick="togS('up')"><span>💰 Упущенные допродажи <span class="bd" style="display:none">✓</span></span><span class="ar">▼</span></div>
+<div class="xc" id="upC"><div class="xd">Сколько дополнительных продаж могли совершить, но не совершили (в среднем 50-80%, разброс для разных сфер). Прямое влияние на средний чек.</div><div class="fr"><div class="fg"><label>% без допродажи</label><input type="number" id="upP" placeholder="70"></div><div class="fg"><label>Чек допродажи, ₽</label><input type="number" id="upK" placeholder="5000"></div></div><div class="xf"><button class="xr" onclick="resS('up')">Сбросить</button></div></div>
+<div class="xh" id="onH" onclick="togS('on')"><span>👥 ФОТ на обучение <span class="bd" style="display:none">✓</span></span><span class="ar">▼</span></div>
+<div class="xc" id="onC"><div class="xd">Экономия на адаптации</div><div class="fr"><div class="fg"><label>Оклад, ₽</label><input type="number" id="sal" placeholder="45000"></div><div class="fg"><label>Адаптация, мес</label><input type="number" id="adp" placeholder="2.5"></div></div><div class="fr"><div class="fg"><label>Операторов</label><input type="number" id="ops" placeholder="15"></div><div class="fg"><label>Текучка, %/год</label><input type="number" id="trn" placeholder="30"></div></div><div class="xf"><button class="xr" onclick="resS('on')">Сбросить</button></div></div>
+</div></div>
+
+<!-- Тариф и стоимость -->
+<div class="cd" id="cdTariff">
+<div class="ch" onclick="toggleCard('cdTariff')"><div class="ic ip">💎</div>Тариф и стоимость<span class="arr">▼</span></div>
+<div class="cb">
+<div class="tbs"><button class="tb a" data-t="sel" onclick="swT('sel')">Выбрать</button><button class="tb" data-t="clc" onclick="swT('clc')">Подобрать</button><button class="tb" data-t="man" onclick="swT('man')">Вручную</button></div>
+<div class="tc a" id="t-sel"><div class="ts" id="tSel"></div><label style="margin-top:10px;display:block">Период оплаты</label><div class="ps" id="pSel"></div>
+<div class="tsu"><div class="tsr"><span>Тариф:</span><span id="sT">Стандарт</span></div><div class="tsr"><span>Скидка:</span><span class="sv" id="sD">−25%</span></div><div class="tsr"><span>Цена/мес:</span><span id="sP">146 993 ₽</span></div><div class="tsr t"><span>За год:</span><span id="sY">1 763 910 ₽</span></div></div>
+<div class="fg mt12"><label>Внедрение, ₽</label><input type="number" id="impl" value="150000" class="hl"></div></div>
+<div class="tc" id="t-clc"><div class="xd">Подбор тарифа по объёму обращений</div><div class="fr"><div class="fg"><label>Обращений/мес</label><input type="number" id="cL" readonly style="background:#f3f4f6;cursor:default"></div><div class="fg"><label>Ср. длительность, мин</label><input type="number" id="cD" value="3"></div></div><button class="btn bp mt12" onclick="calcT()">Подобрать</button><div id="cRes"></div></div>
+<div class="tc" id="t-man"><div class="fg"><label>Лицензия, ₽/мес</label><input type="number" id="mL" value="195990"></div><div class="fg"><label>Внедрение, ₽</label><input type="number" id="mI" value="150000"></div></div>
+</div></div>
+
+<!-- Модель выхода на эффект -->
+<div class="cd" id="cdRamp">
+<div class="ch" onclick="toggleCard('cdRamp')"><div class="ic io">📈</div>Модель выхода на эффект<span class="arr">▼</span></div>
+<div class="cb">
+<div class="xd">Эффект от внедрения нарастает постепенно: настройка системы, обучение команды, адаптация процессов. Срок окупаемости рассчитывается с учётом этой модели.</div>
+<div class="size-btns">
+<button class="size-btn" data-size="small" onclick="setSize('small')"><div class="sn">Малый</div><div class="sd">до 15 операторов</div></button>
+<button class="size-btn a" data-size="medium" onclick="setSize('medium')"><div class="sn">Средний</div><div class="sd">15-50 операторов</div></button>
+<button class="size-btn" data-size="large" onclick="setSize('large')"><div class="sn">Крупный</div><div class="sd">50+ операторов</div></button>
+</div>
+<table class="ramp-tbl" id="rampTbl">
+<thead><tr><th>Месяц</th><th>% эффекта</th><th>Что происходит</th></tr></thead>
+<tbody id="rampBody"></tbody>
+</table>
+</div></div>
+
+<!-- Параметры сценариев -->
+<div class="cd" id="cdScenario">
+<div class="ch" onclick="toggleCard('cdScenario')"><div class="ic io">🎯</div>Параметры сценариев<span class="arr">▼</span></div>
+<div class="cb">
+<div class="sc-desc">Сценарии отражают уровень вовлечённости клиента в работу с данными. Выберите сценарий, чтобы увидеть описание. Параметры роста можно настроить по отрасли или ввести вручную.</div>
+<div class="sc-cards" id="scCards">
+<button class="sc-card" data-sc="0" onclick="setSc(0)"><div class="sc-nm">Консервативный</div><div class="sc-sb">Подключили и наблюдаем</div><div class="sc-pb">70–80%</div></button>
+<button class="sc-card a" data-sc="1" onclick="setSc(1)"><div class="sc-nm">Базовый</div><div class="sc-sb">Работаем с данными</div><div class="sc-pb">~50%</div></button>
+<button class="sc-card" data-sc="2" onclick="setSc(2)"><div class="sc-nm">Оптимистичный</div><div class="sc-sb">Аналитика в процессах</div><div class="sc-pb">20–30%</div></button>
+</div>
+<div class="sc-detail s1" id="scDetail"></div>
+<div class="pr"><button class="pb" data-p="med" onclick="apPr('med')">🏥 Медицина</button><button class="pb" data-p="edu" onclick="apPr('edu')">📚 Образование</button><button class="pb" data-p="re" onclick="apPr('re')">🏠 Недвижимость</button><button class="pb" data-p="cus" onclick="apPr('cus')">⚙️ Свои</button></div>
+<table class="st"><thead><tr><th>Параметр</th><th class="scc">Консерв.</th><th class="scb">Базовый</th><th class="sco">Оптимист.</th></tr></thead><tbody>
+<tr><td>Рост конверсии, п.п. <span class="tip">?<span class="tt">На сколько процентных пунктов хотим увеличить конверсию</span></span></td><td><input type="number" id="cg1" value="2"></td><td><input type="number" id="cg2" value="4"></td><td><input type="number" id="cg3" value="7"></td></tr>
+<tr><td>Рост ср. чека, % <span class="tip">?<span class="tt">На сколько % хотим увеличить средний чек</span></span></td><td><input type="number" id="kg1" value="5"></td><td><input type="number" id="kg2" value="10"></td><td><input type="number" id="kg3" value="15"></td></tr>
+<tr><td>Сокращ. адаптации, % <span class="tip">?<span class="tt">На сколько % хотим сократить срок адаптации новых сотрудников</span></span></td><td><input type="number" id="ar1" value="20"></td><td><input type="number" id="ar2" value="35"></td><td><input type="number" id="ar3" value="50"></td></tr>
+<tr class="sor" id="lrR"><td>% возврата упущенных <span class="tip">?<span class="tt">Сколько % упущенных продаж нужно вернуть в месяц</span></span></td><td><input type="number" id="lr1" value="10"></td><td><input type="number" id="lr2" value="20"></td><td><input type="number" id="lr3" value="35"></td></tr>
+<tr class="sor" id="nuR"><td>% новых допродаж <span class="tip">?<span class="tt">Сколько % новых допродаж будет в месяц</span></span></td><td><input type="number" id="nu1" value="10"></td><td><input type="number" id="nu2" value="20"></td><td><input type="number" id="nu3" value="30"></td></tr>
+</tbody></table>
+</div></div>
+</div>
+<div id="resWrap" style="display:none">
+<div class="cd"><div class="ch" style="cursor:default"><div class="ic ig">✨</div>Результаты<button class="pdf-btn" onclick="exportPDF()">📄 Скачать PDF</button></div><div class="cb">
+<div class="rm own" id="rM"><div class="rmh"><h4 id="rMT">👔 Показатели для собственника</h4><div class="stg"><button data-s="0" onclick="setSc(0)">Консерв.<span class="stt">«Подключили и наблюдаем» — минимальная вовлечённость, эффект от факта мониторинга. Вероятность 70–80%.</span></button><button data-s="1" class="a" onclick="setSc(1)">Базовый<span class="stt">«Работаем с данными» — еженедельный разбор, корректировка скриптов, обратная связь. Вероятность ~50%.</span></button><button data-s="2" onclick="setSc(2)">Оптимист.<span class="stt">«Аналитика встроена в процессы» — выделенная команда, ежедневный разбор, быстрое внедрение. Вероятность 20–30%.</span></button></div></div><div class="rk" id="rK"></div></div>
+<div class="pg-block" id="painGrowth" style="display:none"></div>
+
+<!-- Дисклеймер перенесён наверх -->
+<div class="dsc"><strong>⚠️ Важно:</strong> Расчёт показывает потенциал при системной работе с данными. Аналитика выявляет точки роста — результат зависит от того, как команда внедрит изменения. Срок окупаемости учитывает постепенный выход на эффект.</div>
+
+<div class="rg"><div class="rc cn"><div class="lb">Консервативный</div><div class="sb" style="font-size:9px;margin-bottom:4px;opacity:.8">Подключили и наблюдаем</div><div class="mv" id="r1E">—</div><div class="sb">эффект/мес</div><div class="mt">ROI: <b id="r1R">—</b> · <span id="r1P">—</span></div><div class="pb">Вероятность: 70–80%</div></div><div class="rc bs"><div class="lb">Базовый</div><div class="sb" style="font-size:9px;margin-bottom:4px;opacity:.8">Работаем с данными</div><div class="mv" id="r2E">—</div><div class="sb">эффект/мес</div><div class="mt">ROI: <b id="r2R">—</b> · <span id="r2P">—</span></div><div class="pb">Вероятность: ~50%</div></div><div class="rc op"><div class="lb">Оптимистичный</div><div class="sb" style="font-size:9px;margin-bottom:4px;opacity:.8">Аналитика встроена в процессы</div><div class="mv" id="r3E">—</div><div class="sb">эффект/мес</div><div class="mt">ROI: <b id="r3R">—</b> · <span id="r3P">—</span></div><div class="pb">Вероятность: 20–30%</div></div></div>
+
+<b id="cmpLabel" style="font-size:11px;color:var(--g6)">📊 До / После (базовый)</b>
+<div class="cpg"><div class="cpi bf"><div class="cpl">Конверсия</div><div class="cpv" id="cpCB">25%</div></div><div class="cpi af"><div class="cpl">Конверсия</div><div class="cpv" id="cpCA">29%</div><div class="cpd" id="cpCD">+4 п.п.</div></div><div class="cpi bf"><div class="cpl">Выручка/мес</div><div class="cpv" id="cpRB">4 000 000 ₽</div></div><div class="cpi af"><div class="cpl">Выручка/мес</div><div class="cpv" id="cpRA">5 104 000 ₽</div><div class="cpd" id="cpRD">+27.6%</div></div></div>
+<div class="cht"><h4 id="chartLabel">📈 Окупаемость по месяцам (базовый)</h4><div class="chw"><canvas id="chart"></canvas></div></div>
+<div class="apt" id="aPot" style="display:none"><h4 id="detLabel">📋 Детализация (базовый)</h4><div class="nt">Показатели учтены в общем эффекте</div><div class="ptg">
+<div class="pti" id="pLo" style="display:none"><div class="ptl">От возврата упущенных/мес</div><div class="ptv" id="pLoV">—</div></div><div class="pti" id="pUp" style="display:none"><div class="ptl">От допродаж/мес</div><div class="ptv" id="pUpV">—</div></div><div class="pti" id="pTr" style="display:none"><div class="ptl">Экономия на адаптации/мес</div><div class="ptv" id="pTrV">—</div></div></div></div>
+</div></div>
+<div class="cd msgc" id="msgC"><div class="ch" onclick="togM()"><div class="ic io">💬</div>Описание результата для клиента<span class="ar">▼</span></div><div class="cb">
+<div class="fg"><label>Шаблон</label><select id="mTp">
+<option value="brief">Краткий</option>
+<option value="detailed" selected>Развёрнутый</option>
+<option value="payback">Фокус на окупаемость</option>
+<option value="metrics">Фокус на метрики</option>
+<option value="tariff">С тарифом</option>
+</select></div>
+<div class="mc"><button class="btn bp" onclick="genM()">✨ Сгенерировать</button><button class="btn bsc" onclick="openWz()">🎯 Персонализировать</button><button class="btn bsc" onclick="cpM()">📋 Копировать</button></div>
+<div id="painTag"></div>
+<textarea id="mOut" placeholder="Нажмите «Сгенерировать»..."></textarea>
+</div></div>
+</div>
+</div>
+</div>
+<div id="pdfContent">
+<div class="pdf-hdr">
+<div class="pdf-logo"><b>imot</b><i>.io</i></div>
+<div class="pdf-sub">ROI-калькулятор речевой аналитики</div>
+<div class="pdf-comp" id="pdfComp"></div>
+<div class="pdf-date" id="pdfDate"></div>
+</div>
+<div class="pdf-summary" id="pdfSummary"></div>
+<div class="pdf-section">
+<div class="pdf-sc-label" id="pdfScLabel"></div>
+<h3 id="pdfRoleTitle"></h3>
+<div class="pdf-metrics" id="pdfMetrics"></div>
+</div>
+<div class="pdf-section" id="pdfPainSection" style="display:none">
+<h3>Ваши точки роста</h3>
+<div id="pdfPainGrowth"></div>
+</div>
+<div class="pdf-section">
+<h3>Сценарии</h3>
+<div class="pdf-scenarios" id="pdfScenarios"></div>
+</div>
+<div class="pdf-section">
+<h3 id="pdfCmpTitle">До / После</h3>
+<div class="pdf-cmp" id="pdfCmp"></div>
+</div>
+<div class="pdf-section">
+<h3 id="pdfChartTitle">Окупаемость по месяцам</h3>
+<div class="pdf-chart"><canvas id="pdfChart"></canvas></div>
+</div>
+<div class="pdf-section" id="pdfMsgSection" style="display:none">
+<h3>Описание результатов</h3>
+<div class="pdf-msg" id="pdfMsg"></div>
+</div>
+<div style="padding:6px 20px">
+<div class="pdf-disc"><strong>⚠️ Важно:</strong> Расчёт показывает потенциал при системной работе с данными. Аналитика выявляет точки роста — результат зависит от того, как команда внедрит изменения.</div>
+</div>
+<div class="pdf-footer">imot.io · Платформа речевой аналитики · Расчёт носит оценочный характер</div>
+</div>
+<div class="tst" id="tst">Скопировано!</div>
+<div class="modal-ov" id="wzOv" onclick="if(event.target===this)closeWz()">
+<div class="modal">
+<button class="modal-cls" onclick="closeWz()">✕</button>
+<h3>🎯 Персонализация под клиента</h3>
+<div class="wz-prog" id="wzProg"></div>
+<div id="wzBody"></div>
+<div class="wz-nav">
+<button class="wz-skip" id="wzSkip" onclick="wzNext(true)">Пропустить</button>
+<button class="wz-next" id="wzNext" onclick="wzNext(false)">Далее →</button>
+</div>
+</div>
+</div>
+<script>
+const T={small:{n:'Малый бизнес',p:53990,m:10000},basic:{n:'Базовый',p:123990,m:30000},standard:{n:'Стандарт',p:195990,m:60000},professional:{n:'Профессиональный',p:260000,m:100000},medium:{n:'Средний бизнес',p:399990,m:150000}},D={1:0,3:.06,6:.12,12:.25},P={med:{cg:[1.5,3,5],kg:[5,10,15],lr:[10,20,35],nu:[10,20,30],ar:[20,35,50]},edu:{cg:[2,4,6],kg:[3,7,12],lr:[15,25,40],nu:[8,15,25],ar:[15,30,45]},re:{cg:[1,2.5,4],kg:[2,5,8],lr:[8,15,25],nu:[5,12,20],ar:[10,25,40]},cus:{cg:[2,4,7],kg:[5,10,15],lr:[10,20,35],nu:[10,20,30],ar:[20,35,50]}},RC={own:{t:'👔 Показатели для собственника',c:'own',k:['roi','profit','payback','yearEff']},sal:{t:'📞 Показатели для РОП / Рук. КЦ',c:'sal',k:['convGr','lostRet','adaptSav','quality']},mar:{t:'📊 Показатели для маркетинга',c:'mar',k:['convGr','roi','leadVal','newRev']},com:{t:'💼 Показатели для комдира',c:'com',k:['newRev','profit','roi','revGrowthNoFot']}},S={lo:{f:['loP'],h:'loH',c:'loC',r:'lrR'},up:{f:['upP','upK'],h:'upH',c:'upC',r:'nuR'},on:{f:['sal','adp','ops','trn'],h:'onH',c:'onC'}};
+
+// Ramp-up модели по размеру бизнеса
+const RAMP={
+small:{name:'Малый бизнес',sc:[
+[{m:1,p:0,desc:'Настройка, обучение команды'},{m:2,p:25,desc:'Первые инсайты'},{m:3,p:50,desc:'Процессы меняются'},{m:4,p:75,desc:'Основные кейсы работают'},{m:5,p:90,desc:'Процессы адаптированы'},{m:6,p:100,desc:'Полный эффект'}],
+[{m:1,p:0,desc:'Настройка, обучение команды'},{m:2,p:40,desc:'Основные кейсы работают'},{m:3,p:70,desc:'Процессы адаптированы'},{m:4,p:90,desc:'Стабильная работа'},{m:5,p:100,desc:'Полный эффект'}],
+[{m:1,p:0,desc:'Настройка, обучение команды'},{m:2,p:50,desc:'Основные кейсы работают'},{m:3,p:85,desc:'Процессы адаптированы'},{m:4,p:100,desc:'Полный эффект'}]
+]},
+medium:{name:'Средний бизнес',sc:[
+[{m:1,p:0,desc:'Настройка, пилотная группа'},{m:2,p:15,desc:'Первые инсайты'},{m:3,p:35,desc:'Расширение на команду'},{m:4,p:55,desc:'Обучение завершено'},{m:5,p:75,desc:'Процессы меняются'},{m:6,p:90,desc:'Стабильная работа'},{m:7,p:100,desc:'Полный эффект'}],
+[{m:1,p:0,desc:'Настройка, пилотная группа'},{m:2,p:25,desc:'Расширение на всю команду'},{m:3,p:50,desc:'Обучение завершено'},{m:4,p:75,desc:'Процессы меняются'},{m:5,p:90,desc:'Стабильная работа'},{m:6,p:100,desc:'Полный эффект'}],
+[{m:1,p:0,desc:'Настройка, пилотная группа'},{m:2,p:35,desc:'Расширение на команду'},{m:3,p:70,desc:'Процессы меняются'},{m:4,p:90,desc:'Стабильная работа'},{m:5,p:100,desc:'Полный эффект'}]
+]},
+large:{name:'Крупный бизнес',sc:[
+[{m:1,p:0,desc:'Пилот на части команды'},{m:2,p:10,desc:'Анализ первых данных'},{m:3,p:25,desc:'Расширение пилота'},{m:4,p:40,desc:'Поэтапное внедрение'},{m:5,p:55,desc:'Основная часть подключена'},{m:6,p:70,desc:'Обучение завершено'},{m:7,p:85,desc:'Процессы меняются'},{m:8,p:95,desc:'Финальная оптимизация'},{m:9,p:100,desc:'Полный эффект'}],
+[{m:1,p:0,desc:'Пилот на части команды'},{m:2,p:15,desc:'Расширение пилота'},{m:3,p:35,desc:'Поэтапное внедрение'},{m:4,p:55,desc:'Основная часть подключена'},{m:5,p:75,desc:'Обучение завершено'},{m:6,p:85,desc:'Процессы меняются'},{m:7,p:95,desc:'Финальная оптимизация'},{m:8,p:100,desc:'Полный эффект'}],
+[{m:1,p:0,desc:'Пилот на части команды'},{m:2,p:20,desc:'Расширение на команду'},{m:3,p:50,desc:'Основная часть подключена'},{m:4,p:75,desc:'Процессы меняются'},{m:5,p:90,desc:'Стабильная работа'},{m:6,p:100,desc:'Полный эффект'}]
+]}
+};
+
+// Названия ролей для текстов
+const ROLE_NAMES={own:'собственника',sal:'РОП / руководителя КЦ',mar:'директора по маркетингу',com:'коммерческого директора'};
+
+const SCENARIOS={
+0:{name:'Консервативный',sub:'«Подключили и наблюдаем»',prob:'70–80%',
+detail:[
+'Нет выделенного ответственного — аналитику смотрят «между делом»',
+'Инсайты просматриваются, но системных изменений в процессах не происходит',
+'Скрипты и обучение не корректируются на основе данных',
+'Обратная связь операторам — редкая и несистемная',
+'Эффект от самого факта мониторинга: операторы знают, что их слушают, и работают аккуратнее'
+],
+gen:'при минимальной вовлечённости — аналитика подключена, но системных изменений в процессах не внедряется'},
+1:{name:'Базовый',sub:'«Работаем с данными»',prob:'~50%',
+detail:[
+'Есть ответственный за работу с аналитикой (РОП или выделенный сотрудник)',
+'Регулярный (еженедельный) разбор инсайтов',
+'Корректировка скриптов и стандартов на основе данных — с задержкой в 1–2 недели',
+'Обратная связь операторам по конкретным звонкам',
+'Обучение новичков с использованием лучших примеров из аналитики',
+'Руководство вовлечено на уровне контроля KPI'
+],
+gen:'при регулярной работе с данными — еженедельный разбор, корректировка скриптов, обратная связь операторам'},
+2:{name:'Оптимистичный',sub:'«Аналитика встроена в процессы»',prob:'20–30%',
+detail:[
+'Выделенная команда или ответственный с полномочиями менять процессы',
+'Ежедневный или через день разбор критичных кейсов',
+'Оперативное (в течение 2–3 дней) внедрение изменений: скрипты, обучение, маршрутизация',
+'Системная работа с каждым оператором: персональные планы развития',
+'Интеграция с CRM и процессами найма/адаптации',
+'Руководство лично участвует в обсуждении результатов'
+],
+gen:'при максимальной вовлечённости — выделенная команда, ежедневный разбор, оперативное внедрение изменений за 2–3 дня'}
+};
+
+// Pain personalization data
+const PAINS={
+lowConv:{label:'Низкая конверсия',icon:'📉'},
+noQA:{label:'Нет контроля качества',icon:'🔍'},
+churn:{label:'Высокая текучка',icon:'🚪'},
+lostSale:{label:'Упущенные продажи',icon:'🚫'},
+noUpsell:{label:'Нет допродаж',icon:'💸'},
+longOnb:{label:'Долгая адаптация',icon:'🐢'},
+lowNPS:{label:'Жалобы / низкий NPS',icon:'😤'},
+noScale:{label:'Не масштабируемся',icon:'📦'}
+};
+
+const PAIN_CTX={
+lowConv:[
+{q:'Знаете причину низкой конверсии?',k:'cause',opts:['Не следуют скрипту','Нет скрипта','Не знаем — нет аналитики']},
+{q:'Разброс между операторами большой?',k:'spread',opts:['Да, лучшие в 2-3 раза выше','Небольшой','Не отслеживаем']}
+],
+noQA:[
+{q:'Сколько % звонков прослушивается сейчас?',k:'pct',opts:['0-2%','2-10%','10%+']},
+{q:'Кто контролирует качество?',k:'who',opts:['РОП между делом','Выделенный QA','Никто системно']}
+],
+churn:[
+{q:'Сколько операторов уходит за квартал?',k:'qty',opts:['1-3','3-10','10+']},
+{q:'Основная причина ухода?',k:'reason',opts:['Выгорание','Зарплата','Нет роста','Не знаем']}
+],
+lostSale:[
+{q:'Откуда знаете про потери?',k:'source',opts:['Жалобы клиентов','CRM-воронка показывает','Интуиция руководителя']},
+{q:'На каком этапе теряются?',k:'stage',opts:['Первый контакт','Повторное касание','Закрытие сделки']}
+],
+noUpsell:[
+{q:'Есть скрипт на допродажу?',k:'script',opts:['Да, но не используют','Нет','Есть, работает частично']},
+{q:'Операторы знают продуктовую линейку?',k:'knowledge',opts:['Хорошо','Поверхностно','Нет']}
+],
+longOnb:[
+{q:'Сколько длится адаптация сейчас?',k:'duration',opts:['1-2 мес','2-4 мес','4+ мес']},
+{q:'Как обучаете новичков?',k:'method',opts:['Наставник','Запись и самообучение','Сразу на линию']}
+],
+lowNPS:[
+{q:'Основные причины жалоб?',k:'cause',opts:['Грубость','Некомпетентность','Долгое ожидание','Не знаем']},
+{q:'Фиксируете жалобы системно?',k:'tracking',opts:['Да, в CRM','Частично','Нет']}
+],
+noScale:[
+{q:'Сколько операторов сейчас?',k:'size',opts:['до 15','15-50','50+']},
+{q:'Есть потолок по нагрузке?',k:'load',opts:['Да, уже перегружены','Близко к пределу','Пока справляемся']}
+]
+};
+
+const TRIED_OPTS=[
+{k:'trainings',label:'Тренинги и обучение'},
+{k:'scripts',label:'Скрипты продаж'},
+{k:'listening',label:'Ручную прослушку'},
+{k:'crm',label:'CRM-автоматизацию'},
+{k:'nothing',label:'Ничего системного'}
+];
+
+const EXPECT_OPTS=[
+{k:'fast',label:'Быстрый результат',desc:'Нужен эффект в ближайшие недели'},
+{k:'system',label:'Долгосрочная система',desc:'Выстроить процесс контроля качества'},
+{k:'proof',label:'Доказательства для руководства',desc:'Цифры для презентации и защиты бюджета'}
+];
+
+let painData={pains:[],context:{},tried:[],expectation:null};
+let wzStep=0;
+
+let sT='standard',sP=12,aT='sel',role='own',R={},chart=null,kSc=1,bizSize='medium',rT=null,rP=1,rRec=null;
+
+function init(){renT();renP();updateRampTable();updScDetail();hlScCol();calc();document.querySelectorAll('input').forEach(i=>i.addEventListener('input',calc));}
+
+// Сворачивание карточек
+function toggleCard(id){
+const card=document.getElementById(id);
+const header=card.querySelector('.ch');
+card.classList.toggle('collapsed');
+header.classList.toggle('collapsed');
+}
+
+function renT(){document.getElementById('tSel').innerHTML=Object.entries(T).map(([k,v])=>`<div class="to${k===sT?' s':''}" onclick="selT('${k}')"><div><div class="tn">${v.n}</div><div class="tm">${fmt(v.m)} мин/мес</div></div><div class="tp">${fmt(v.p)} ₽</div></div>`).join('');}
+function renP(){document.getElementById('pSel').innerHTML=[1,3,6,12].map(p=>`<div class="po${p===sP?' s':''}" onclick="selP(${p})"><div class="pl">${p} мес</div><div class="pds">${p===1?'—':'−'+D[p]*100+'%'}</div>${p>1?`<div class="pdb">−${D[p]*100}%</div>`:''}</div>`).join('');}
+function selR(r){role=r;document.querySelectorAll('.rb').forEach(b=>b.classList.toggle('a',b.dataset.r===r));document.getElementById('rMT').textContent=RC[r].t;document.getElementById('rM').className='rm '+RC[r].c;updK();}
+function selT(t){sT=t;renT();updS();calc();}
+function selP(p){sP=p;renP();updS();calc();}
+function swT(t){aT=t;document.querySelectorAll('.tb').forEach(b=>b.classList.toggle('a',b.dataset.t===t));document.querySelectorAll('.tc').forEach(c=>c.classList.toggle('a',c.id==='t-'+t));if(t==='clc'){document.getElementById('cL').value=gv('leads');}calc();}
+function togS(n){document.getElementById(S[n].h).classList.toggle('op');document.getElementById(S[n].c).classList.toggle('op');}
+function resS(n){S[n].f.forEach(f=>document.getElementById(f).value='');updSt(n);calc();}
+function updSt(n){const s=S[n],has=s.f.some(f=>{const v=document.getElementById(f).value;return v&&parseFloat(v)>0;});document.getElementById(s.h).classList.toggle('hd',has);document.getElementById(s.h).querySelector('.bd').style.display=has?'inline':'none';if(s.r)document.getElementById(s.r).classList.toggle('v',has);}
+function updAS(){Object.keys(S).forEach(updSt);}
+function togM(){document.getElementById('msgC').classList.toggle('opn');}
+function setSc(sc){
+kSc=sc;
+// Sync results toggle
+document.querySelectorAll('.stg button').forEach(b=>b.classList.toggle('a',parseInt(b.dataset.s)===sc));
+// Sync scenario cards
+document.querySelectorAll('.sc-card').forEach(b=>b.classList.toggle('a',parseInt(b.dataset.sc)===sc));
+updateRampTable();
+updScDetail();
+hlScCol();
+updScUI();
+updK();
+}
+
+function updScDetail(){
+const el=document.getElementById('scDetail');
+const sc=SCENARIOS[kSc];
+el.className='sc-detail s'+kSc;
+el.innerHTML='<b>'+sc.name+' — '+sc.sub+' <span style="font-size:10px;opacity:.7;font-weight:400">(вероятность '+sc.prob+')</span></b><ul>'+sc.detail.map(d=>'<li>'+d+'</li>').join('')+'</ul>';
+}
+
+function hlScCol(){
+const tbl=document.querySelector('#cdScenario .st');
+if(!tbl)return;
+const colIdx=kSc+1; // 0=param, 1=cons, 2=base, 3=opt
+tbl.querySelectorAll('th,td').forEach(c=>c.classList.remove('sc-hl'));
+tbl.querySelectorAll('tr').forEach(r=>{const cells=r.children;if(cells[colIdx])cells[colIdx].classList.add('sc-hl');});
+}
+
+// Размер бизнеса
+function setSize(size){
+bizSize=size;
+document.querySelectorAll('.size-btn').forEach(b=>b.classList.toggle('a',b.dataset.size===size));
+updateRampTable();
+calc();
+}
+
+function updateRampTable(){
+const ramp=RAMP[bizSize].sc[kSc];
+document.getElementById('rampBody').innerHTML=ramp.map(r=>
+`<tr><td>${r.m}</td><td class="pct">${r.p}%</td><td>${r.desc}</td></tr>`
+).join('');
+}
+
+function autoDetectSize(ops){
+if(ops>0){
+let newSize='medium';
+if(ops<15)newSize='small';
+else if(ops>=50)newSize='large';
+if(newSize!==bizSize){
+bizSize=newSize;
+document.querySelectorAll('.size-btn').forEach(b=>b.classList.toggle('a',b.dataset.size===bizSize));
+updateRampTable();
+}
+}
+}
+
+// Расчёт окупаемости с ramp-up
+function calcPaybackWithRamp(impl,lic,monthlyGross,scIdx){
+if(monthlyGross<=0)return 999;
+const ramp=RAMP[bizSize].sc[scIdx||0];
+let cum=-impl-lic;
+
+for(let m=1;m<=36;m++){
+let pct=100;
+const rm=ramp.find(r=>r.m===m);
+if(rm){
+pct=rm.p;
+}else if(m<ramp[0].m){
+pct=0;
+}
+const monthNet=monthlyGross*(pct/100)-(m>=2?lic:0);
+cum+=monthNet;
+if(cum>=0){
+const prevCum=cum-monthNet;
+const needMore=-prevCum;
+const fraction=monthNet>0?needMore/monthNet:0;
+return (m-1)+fraction;
+}
+}
+return 999;
+}
+
+// Расчёт данных для графика окупаемости
+function calcPaybackData(impl,lic,monthlyGross,scIdx){
+const ramp=RAMP[bizSize].sc[scIdx||0];
+const data=[];
+let cum=-impl-lic;
+data.push({m:0,eff:0,cum:-impl-lic,status:'−'+fmtC(impl+lic)});
+for(let m=1;m<=12;m++){
+let pct=100;
+const rm=ramp.find(r=>r.m===m);
+if(rm)pct=rm.p;
+else if(m<ramp[0].m)pct=0;
+const mEff=monthlyGross*(pct/100)-(m>=2?lic:0);
+cum+=mEff;
+data.push({m,pct,eff:mEff,cum,status:cum<0?'−'+fmtC(-cum):'✅ +'+fmtC(cum)});
+}
+return data;
+}
+
+function buildKd(s){
+const oldLeadVal=R.conv/100*R.chk;
+const newLeadVal=s.newConv/100*s.newChk;
+const leadValGrowth=oldLeadVal>0?((newLeadVal-oldLeadVal)/oldLeadVal*100):0;
+const revGrowthPct=R.curRev>0?((s.newRev-R.curRev)/R.curRev*100):0;
+return{
+roi:{l:'ROI за год',v:Math.round(s.roi)+'%'},
+profit:{l:'Чистый эффект/мес',v:fmtC(s.netEff)},
+payback:{l:'Окупаемость',v:fmtP(s.payback)},
+yearEff:{l:'Эффект за год',v:fmtC(s.netEff*12)},
+convGr:{l:'Рост конверсии',v:'+'+gv('cg'+(kSc+1))+' п.п.'},
+quality:{l:'Улучшение качества',v:'до +'+[20,30,40][kSc]+'%'},
+lostRet:{l:'Возврат упущенных',v:gv('lr'+(kSc+1))+'%'},
+adaptSav:{l:'Экономия на адаптации',v:s.trSav?fmtC(s.trSav)+'/мес':'—'},
+leadVal:{l:'Рост ценности лида',v:'+'+leadValGrowth.toFixed(1)+'%'},
+newRev:{l:'Новая выручка/мес',v:fmtC(s.newRev)},
+revGrowthNoFot:{l:'Рост выручки (тот же штат)',v:'+'+revGrowthPct.toFixed(1)+'%'}
+};
+}
+
+function updK(){
+if(!R.sc||!R.sc.length)return;
+const cfg=RC[role],s=R.sc[kSc];
+const kd=buildKd(s);
+const hlSet=new Set();
+painData.pains.forEach(p=>{const rel=PAIN_REL[p];if(rel)rel.metrics.forEach(m=>hlSet.add(m));});
+document.getElementById('rK').innerHTML=cfg.k.map(k=>{
+const hl=hlSet.has(k);
+return`<div class="rki${hl?' rki-hl':''}"><div class="kl">${kd[k].l}</div><div class="kv">${kd[k].v}</div>${hl?'<div class="kbg">🎯 Ваш рычаг</div>':''}</div>`;
+}).join('');
+renPainGrowth();
+}
+
+function renPainGrowth(){
+const el=document.getElementById('painGrowth');
+if(!painData.pains.length||!R.sc||!R.sc.length){el.style.display='none';return;}
+const s=R.sc[kSc],kd=buildKd(s);
+const cfg=RC[role];
+let html='<h4>🎯 Ваши точки роста</h4>';
+painData.pains.forEach(p=>{
+const rel=PAIN_REL[p];if(!rel)return;
+const pain=PAINS[p];
+const vals=rel.metrics.filter(m=>cfg.k.includes(m)||kd[m]).map(m=>kd[m]?'<span>'+kd[m].l+': <b>'+kd[m].v+'</b></span>':'').filter(Boolean).join('');
+html+=`<div class="pg-item"><div>${pain.icon} <b>${pain.label}</b> → ${rel.lever}</div><div class="pg-mv">${vals}</div></div>`;
+});
+el.innerHTML=html;
+el.style.display='block';
+}
+
+function updS(){const t=T[sT],d=D[sP],dp=t.p*(1-d),yr=dp*12;document.getElementById('sT').textContent=t.n;document.getElementById('sD').textContent=d?'−'+d*100+'%':'—';document.getElementById('sP').textContent=fmt(dp)+' ₽';document.getElementById('sY').textContent=fmt(yr)+' ₽';}
+function getLic(){return aT==='man'?gv('mL'):T[sT].p*(1-D[sP]);}
+function getImpl(){return aT==='man'?gv('mI'):gv('impl');}
+function gv(id){const el=document.getElementById(id);return el&&el.value?parseFloat(el.value):0;}
+function fmt(n){return Math.round(n).toLocaleString('ru-RU');}
+function fmtC(n){return fmt(n)+' ₽';}
+function fmtP(m){if(m<=0||!isFinite(m)||m>=999)return'—';if(m<1)return Math.round(m*30)+' дн';if(m<2)return Math.round(m*30)+' дн';return(Math.round(m*10)/10)+' мес';}
+
+function calc(){
+const leads=gv('leads'),conv=gv('conv'),chk=gv('chk'),lic=getLic(),impl=getImpl();
+const mainFilled=leads>0&&conv>0&&chk>0;
+document.getElementById('resWrap').style.display=mainFilled?'':'none';
+if(!mainFilled){document.getElementById('curR').textContent='—';document.getElementById('totC').textContent='—';return;}
+document.getElementById('cL').value=leads;
+const lost=gv('loP'),noUp=gv('upP'),upK=gv('upK');
+const sal=gv('sal'),adp=gv('adp'),ops=gv('ops'),trn=gv('trn');
+const curRev=leads*(conv/100)*chk;
+document.getElementById('curR').textContent=fmtC(curRev);
+const licYr=lic*12,totC=impl+licYr;
+document.getElementById('totC').textContent=fmtC(totC);
+
+autoDetectSize(ops);
+
+const sc=[1,2,3].map(i=>({cg:gv('cg'+i),kg:gv('kg'+i),ar:gv('ar'+i),lr:gv('lr'+i),nu:gv('nu'+i)}));
+R={sc:[],pot:[],lic,impl,totC,licYr,curRev,conv,chk,leads};
+
+sc.forEach((s,i)=>{
+const newConv=conv+s.cg,newChk=chk*(1+s.kg/100),newRev=leads*(newConv/100)*newChk;
+let trSav=0;
+if(sal&&adp&&ops&&trn){
+const oldC=sal*adp*1.5,newA=adp*(1-s.ar/100),newC=sal*newA*1.5,nb=ops*(trn/100);
+trSav=(oldC-newC)*nb/12;
+}
+const revGr=(newRev-curRev)+trSav;
+const netEff=revGr-lic;
+const payback=calcPaybackWithRamp(impl,lic,revGr,i);
+const grYr=revGr*12,roi=totC>0?((grYr-totC)/totC)*100:0;
+R.sc.push({netEff,roi,payback,revGr,newConv,newChk,newRev,trSav});
+
+let loPot=0,upPot=0;
+if(lost)loPot=leads*(lost/100)*(s.lr/100)*chk;
+if(noUp&&upK)upPot=leads*(conv/100)*(noUp/100)*(s.nu/100)*upK;
+R.pot.push({loPot,upPot});
+});
+
+[1,2,3].forEach((i,x)=>{
+const s=R.sc[x];
+document.getElementById('r'+i+'E').textContent='+'+fmtC(s.netEff);
+document.getElementById('r'+i+'R').textContent=Math.round(s.roi)+'%';
+document.getElementById('r'+i+'P').textContent=fmtP(s.payback);
+});
+
+updScUI();
+updK();
+
+const hasLo=lost>0,hasUp=noUp&&upK,hasTr=R.sc[0].trSav>0,showP=hasLo||hasUp||hasTr;
+document.getElementById('aPot').style.display=showP?'block':'none';
+document.getElementById('pLo').style.display=hasLo?'block':'none';
+document.getElementById('pUp').style.display=hasUp?'block':'none';
+document.getElementById('pTr').style.display=hasTr?'block':'none';
+updAS();
+updS();
+}
+
+function updScUI(){
+if(!R.sc||!R.sc.length)return;
+const s=R.sc[kSc];
+const scNames=['консервативный','базовый','оптимистичный'];
+document.getElementById('cmpLabel').textContent='📊 До / После ('+scNames[kSc]+')';
+document.getElementById('cpCB').textContent=R.conv+'%';
+document.getElementById('cpCA').textContent=s.newConv.toFixed(1)+'%';
+document.getElementById('cpCD').textContent='+'+gv('cg'+(kSc+1))+' п.п.';
+document.getElementById('cpRB').textContent=fmtC(R.curRev);
+document.getElementById('cpRA').textContent=fmtC(s.newRev);
+document.getElementById('cpRD').textContent='+'+(R.curRev>0?((s.newRev-R.curRev)/R.curRev*100).toFixed(1):'0')+'%';
+const p=R.pot[kSc];
+document.getElementById('detLabel').textContent='📋 Детализация ('+scNames[kSc]+')';
+if(p){if(p.loPot>0)document.getElementById('pLoV').textContent='+'+fmtC(p.loPot);if(p.upPot>0)document.getElementById('pUpV').textContent='+'+fmtC(p.upPot);}
+if(s.trSav>0)document.getElementById('pTrV').textContent='+'+fmtC(s.trSav);
+renCh();
+}
+
+function renCh(){
+const s=R.sc[kSc],impl=R.impl,lic=R.lic,targetEff=s.revGr;
+const scNames=['консервативный','базовый','оптимистичный'];
+document.getElementById('chartLabel').textContent='📈 Окупаемость по месяцам ('+scNames[kSc]+')';
+const ramp=RAMP[bizSize].sc[kSc];
+const data=[];
+let cum=-impl-lic;
+data.push({x:0,y:Math.round(cum)});
+
+for(let m=1;m<=12;m++){
+let pct=100;
+const rm=ramp.find(r=>r.m===m);
+if(rm)pct=rm.p;
+else if(m<ramp[0].m)pct=0;
+const mEff=targetEff*(pct/100)-(m>=2?lic:0);
+cum+=mEff;
+data.push({x:m,y:Math.round(cum)});
+}
+
+if(chart)chart.destroy();
+chart=new Chart(document.getElementById('chart'),{
+type:'line',
+data:{
+labels:data.map(d=>'М'+d.x),
+datasets:[{
+data:data.map(d=>d.y),
+borderColor:'#B37FEB',
+backgroundColor:'rgba(179,127,235,0.1)',
+fill:true,
+tension:0.3,
+pointRadius:4,
+pointHoverRadius:6,
+pointBackgroundColor:'#B37FEB',
+pointBorderColor:'#fff',
+pointBorderWidth:2
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+interaction:{intersect:false,mode:'index'},
+plugins:{
+legend:{display:false},
+tooltip:{
+backgroundColor:'#1f2937',
+titleColor:'#fff',
+bodyColor:'#fff',
+padding:10,
+cornerRadius:6,
+callbacks:{label:function(ctx){return fmt(ctx.raw)+' ₽';}}
+}
+},
+scales:{
+y:{ticks:{callback:v=>fmt(v)+'₽'},grid:{color:'rgba(0,0,0,0.05)'}},
+x:{grid:{display:false}}
+}
+}
+});
+}
+
+function calcT(){const need=gv('cL')*gv('cD');let rec=null;for(const[k,v]of Object.entries(T)){if(v.m>=need){rec={key:k,...v,need};break;}}if(!rec)rec={key:'medium',...T.medium,need,over:true};rT=rec.key;rP=sP;rRec=rec;renCR(rec);}
+
+function renCR(rec){
+const warn=rec.over||rec.need>rec.m*.9;
+const d=D[rP],dp=rec.p*(1-d),yr=dp*12;
+let h='<div class="cr '+(warn?'wn':'ok')+'">';
+h+='<b>'+(warn?'❗️ Рекомендация':'✅ Рекомендуемый тариф')+'</b>';
+h+='<div class="rc">'+rec.n+'</div>';
+h+='<div class="dt">Нужно: '+fmt(rec.need)+' мин · В тарифе: '+fmt(rec.m)+' мин<br>'+(warn?'Запас небольшой — рассмотрите следующий':'Запас: '+fmt(rec.m-rec.need)+' мин')+'</div>';
+h+='<div style="margin-top:10px;font-size:11px;font-weight:600;color:var(--g6)">Период оплаты</div>';
+h+='<div class="cps">';
+[1,3,6,12].forEach(function(p){
+h+='<div class="cpo'+(p===rP?' s':'')+'" onclick="selRP('+p+')">';
+h+='<div class="cpl">'+p+' мес</div>';
+h+='<div class="cpd">'+(p===1?'—':'−'+D[p]*100+'%')+'</div>';
+if(p>1)h+='<div class="cpb">−'+D[p]*100+'%</div>';
+h+='</div>';
+});
+h+='</div>';
+h+='<div class="cpr">';
+h+='<div class="cprr"><span>Тариф:</span><span>'+rec.n+'</span></div>';
+h+='<div class="cprr"><span>Скидка:</span><span class="sv">'+(d?'−'+d*100+'%':'—')+'</span></div>';
+h+='<div class="cprr"><span>Цена/мес:</span><span>'+fmt(dp)+' ₽</span></div>';
+h+='<div class="cprr t"><span>За год:</span><span>'+fmt(yr)+' ₽</span></div>';
+h+='</div>';
+h+='<button class="cab" onclick="apRC()">Применить рекомендацию</button>';
+h+='</div>';
+document.getElementById('cRes').innerHTML=h;
+}
+function selRP(p){rP=p;if(rRec)renCR(rRec);}
+function apRC(){if(!rT)return;selT(rT);selP(rP);swT('sel');}
+
+function apPr(n){
+const p=P[n];
+if(!p)return;
+document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('a',b.dataset.p===n));
+document.getElementById('cg1').value=p.cg[0];
+document.getElementById('cg2').value=p.cg[1];
+document.getElementById('cg3').value=p.cg[2];
+document.getElementById('kg1').value=p.kg[0];
+document.getElementById('kg2').value=p.kg[1];
+document.getElementById('kg3').value=p.kg[2];
+document.getElementById('ar1').value=p.ar[0];
+document.getElementById('ar2').value=p.ar[1];
+document.getElementById('ar3').value=p.ar[2];
+document.getElementById('lr1').value=p.lr[0];
+document.getElementById('lr2').value=p.lr[1];
+document.getElementById('lr3').value=p.lr[2];
+document.getElementById('nu1').value=p.nu[0];
+document.getElementById('nu2').value=p.nu[1];
+document.getElementById('nu3').value=p.nu[2];
+calc();
+}
+
+// Pain-personalized text blocks
+const PAIN_HOOKS={
+lowConv:function(ctx,r){
+let t='Вы отметили проблему с конверсией.';
+if(ctx.lowConv_cause==='Не следуют скрипту')t+=' Операторы не следуют скрипту — аналитика покажет, кто и где отклоняется.';
+else if(ctx.lowConv_cause==='Нет скрипта')t+=' Без скрипта каждый оператор работает по-своему — аналитика выявит лучшие практики и поможет создать работающий скрипт.';
+else if(ctx.lowConv_cause==='Не знаем — нет аналитики')t+=' Без аналитики причина потерь — чёрный ящик. imot.io покажет, что именно идёт не так.';
+if(ctx.lowConv_spread==='Да, лучшие в 2-3 раза выше')t+=' При разбросе в 2-3 раза между операторами речевая аналитика покажет, что делают лучшие — и подтянет остальных.';
+else if(ctx.lowConv_spread==='Не отслеживаем')t+=' Вы не отслеживаете разницу между операторами — а она может быть в разы. Первое, что покажет imot.io.';
+return t;
+},
+noQA:function(ctx){
+let t='Вы отметили отсутствие контроля качества.';
+if(ctx.noQA_pct==='0-2%')t+=' Сейчас прослушивается менее 2% звонков — 98% коммуникаций остаются чёрным ящиком.';
+else if(ctx.noQA_pct==='2-10%')t+=' Прослушивается 2-10% звонков — но большая часть проблем остаётся незамеченной.';
+if(ctx.noQA_who==='Никто системно')t+=' Системного контроля нет — проблемы обнаруживаются только по жалобам.';
+else if(ctx.noQA_who==='РОП между делом')t+=' РОП контролирует между делом — это неизбежно бессистемно и субъективно.';
+t+=' imot.io автоматически анализирует 100% коммуникаций.';
+return t;
+},
+churn:function(ctx){
+let t='Вы отметили высокую текучку операторов.';
+if(ctx.churn_qty==='10+')t+=' Уход 10+ человек в квартал — это постоянный цикл найма и обучения.';
+else if(ctx.churn_qty==='3-10')t+=' 3-10 уходов в квартал — заметная нагрузка на обучение.';
+if(ctx.churn_reason==='Выгорание')t+=' Выгорание часто связано с отсутствием обратной связи — аналитика помогает выстроить прозрачные KPI и снизить давление.';
+else if(ctx.churn_reason==='Не знаем')t+=' Если причина неизвестна — речевая аналитика покажет паттерны, предшествующие уходу.';
+return t;
+},
+lostSale:function(ctx){
+let t='Вы отметили проблему упущенных продаж.';
+if(ctx.lostSale_source==='Интуиция руководителя')t+=' Пока это ощущение — аналитика превратит его в конкретные цифры.';
+else if(ctx.lostSale_source==='CRM-воронка показывает')t+=' CRM показывает, ГДЕ теряются — но не ПОЧЕМУ. Речевая аналитика покажет причину.';
+if(ctx.lostSale_stage==='Первый контакт')t+=' Потери на первом контакте — часто проблема приветствия и квалификации.';
+else if(ctx.lostSale_stage==='Закрытие сделки')t+=' Потери на закрытии — аналитика покажет, какие возражения не отрабатываются.';
+return t;
+},
+noUpsell:function(ctx){
+let t='Вы отметили отсутствие допродаж.';
+if(ctx.noUpsell_script==='Да, но не используют')t+=' Скрипт есть, но не используется — аналитика покажет, кто его игнорирует и в каких ситуациях.';
+else if(ctx.noUpsell_script==='Нет')t+=' Без скрипта допродажи зависят от инициативы оператора. Аналитика выявит моменты, когда допродажа уместна.';
+if(ctx.noUpsell_knowledge==='Нет'||ctx.noUpsell_knowledge==='Поверхностно')t+=' Операторы слабо знают линейку — аналитика покажет, что рекомендовать в каких ситуациях.';
+return t;
+},
+longOnb:function(ctx){
+let t='Вы отметили долгую адаптацию новичков.';
+if(ctx.longOnb_duration==='4+ мес')t+=' 4+ месяца адаптации — за это время теряются деньги и мотивация.';
+else if(ctx.longOnb_duration==='2-4 мес')t+=' 2-4 месяца — можно сократить до 1-2 с помощью лучших практик из звонков.';
+if(ctx.longOnb_method==='Сразу на линию')t+=' Новичков сразу ставят на линию — аналитика покажет их ошибки в первые же дни.';
+else if(ctx.longOnb_method==='Наставник')t+=' Наставничество — хорошо, но аналитика масштабирует этот эффект на 100% звонков.';
+return t;
+},
+lowNPS:function(ctx){
+let t='Вы отметили жалобы клиентов.';
+if(ctx.lowNPS_cause==='Не знаем')t+=' Причины жалоб неизвестны — аналитика покажет системные паттерны.';
+else if(ctx.lowNPS_cause==='Грубость')t+=' Грубость операторов — аналитика выявляет тон и эмоции автоматически.';
+else if(ctx.lowNPS_cause==='Некомпетентность')t+=' Некомпетентность — аналитика покажет, где не хватает знаний.';
+if(ctx.lowNPS_tracking==='Нет')t+=' Жалобы не фиксируются системно — проблемы накапливаются незаметно.';
+return t;
+},
+noScale:function(ctx){
+let t='Вы хотите масштабироваться без найма.';
+if(ctx.noScale_load==='Да, уже перегружены')t+=' Команда уже перегружена — аналитика поможет повысить эффективность каждого оператора.';
+if(ctx.noScale_size==='50+')t+=' При 50+ операторах ручной контроль невозможен — нужна автоматизация.';
+else if(ctx.noScale_size==='15-50')t+=' При 15-50 операторах автоматизация контроля даёт максимальный рычаг.';
+return t;
+}
+};
+
+const PAIN_REL={
+lowConv:{metrics:['convGr','leadVal','roi'],section:null,lever:'Рост конверсии через контроль скриптов'},
+noQA:{metrics:['quality','convGr'],section:null,lever:'100% контроль качества коммуникаций'},
+churn:{metrics:['adaptSav','quality'],section:'on',lever:'Снижение текучки и стоимости обучения'},
+lostSale:{metrics:['lostRet','profit'],section:'lo',lever:'Возврат упущенных продаж'},
+noUpsell:{metrics:['newRev','profit'],section:'up',lever:'Рост выручки через допродажи'},
+longOnb:{metrics:['adaptSav','yearEff'],section:'on',lever:'Сокращение адаптации новичков'},
+lowNPS:{metrics:['quality','convGr'],section:null,lever:'Снижение жалоб через контроль'},
+noScale:{metrics:['roi','revGrowthNoFot'],section:null,lever:'Масштабирование без увеличения штата'}
+};
+
+const PAIN_FILL={
+lo:{loP:12},
+up:{upP:70,upK:5000},
+on:{sal:45000,adp:2.5,ops:15,trn:30}
+};
+
+const TRIED_COUNTER={
+trainings:'Вы пробовали тренинги — но эффект затухает за 2-3 недели без системного контроля.',
+scripts:'Вы пробовали скрипты — но скрипт работает, только если его соблюдают. А кто проверяет?',
+listening:'Вы пробовали ручную прослушку — но она покрывает 2-5% звонков, остальное — мёртвая зона.',
+crm:'Вы пробовали CRM-автоматизацию — CRM фиксирует результат, но не показывает, что происходит внутри разговора.',
+nothing:'Вы ещё не пробовали системных решений — значит, потенциал улучшений полностью открыт.'
+};
+
+const EXPECT_CLOSE={
+fast:'Первые инсайты — в течение недели после подключения. Первые изменения в метриках — через 2-4 недели.',
+system:'Речевая аналитика становится постоянной частью управления качеством — система, которая работает без ручного контроля.',
+proof:null
+};
+
+function genM(){
+const tpl=document.getElementById('mTp').value;
+const comp=document.getElementById('comp').value;
+const co=comp?' для '+comp:'';
+const s={cn:R.sc[0],bs:R.sc[1],op:R.sc[2]};
+const sel=R.sc[kSc];
+const scInfo=SCENARIOS[kSc];
+const sci=kSc+1;
+const t=T[sT],d=D[sP];
+const ramp=RAMP[bizSize].sc[kSc];
+const roleName=ROLE_NAMES[role];
+
+// Расчёт ценности лида
+const oldLeadVal=R.conv/100*R.chk;
+const newLeadVal=sel.newConv/100*sel.newChk;
+const leadValGrowth=oldLeadVal>0?((newLeadVal-oldLeadVal)/oldLeadVal*100):0;
+
+// Расчёт роста выручки
+const revGrowthPct=R.curRev>0?((sel.newRev-R.curRev)/R.curRev*100):0;
+
+// Данные для окупаемости
+const paybackData=calcPaybackData(R.impl,R.lic,sel.revGr,kSc);
+
+const pot=R.pot[kSc];
+let potBlock='';
+if((pot&&(pot.loPot>0||pot.upPot>0))||sel.trSav>0){
+potBlock='\n\n💡 **Из чего складывается рост:**';
+if(pot.loPot>0)potBlock+='\n• За счёт возврата упущенных продаж: до **+'+fmtC(pot.loPot)+'/мес**';
+if(pot.upPot>0)potBlock+='\n• За счёт допродаж: до **+'+fmtC(pot.upPot)+'/мес**';
+if(sel.trSav>0)potBlock+='\n• За счёт сокращения адаптации: **'+fmtC(sel.trSav)+'/мес**';
+}
+
+let msg='';
+const note='\n\n💡 _Результат определяется уровнем вовлечённости: аналитика выявляет точки роста — а команда внедряет изменения. Чем быстрее цикл «данные → инсайт → действие», тем выше эффект._';
+
+if(tpl==='brief'){
+// Краткий — адаптирован под роль
+if(role==='own'){
+msg=`Расчёт ROI${co}.\n\n**${scInfo.name}** ${scInfo.sub} — ${scInfo.gen}:\n📊 Эффект: **+${fmtC(sel.netEff)}/мес**\n📈 ROI за год: **${Math.round(sel.roi)}%**\n⏱ Окупаемость: **${fmtP(sel.payback)}**\n💰 За год: **+${fmtC(sel.netEff*12)}**${potBlock}${note}`;
+}else if(role==='sal'){
+msg=`Расчёт${co} для ${roleName}.\n\n**${scInfo.name}** ${scInfo.sub} — ${scInfo.gen}:\n📈 Рост конверсии: **+${gv('cg'+sci)} п.п.** (${R.conv}% → ${sel.newConv.toFixed(1)}%)\n🔄 Возврат упущенных: **${gv('lr'+sci)}%/мес**\n👥 Улучшение качества работы операторов\n✨ Эффект: **+${fmtC(sel.netEff)}/мес**${potBlock}${note}`;
+}else if(role==='mar'){
+msg=`Расчёт${co} для ${roleName}.\n\n**${scInfo.name}** ${scInfo.sub} — ${scInfo.gen}:\n📈 Рост конверсии: **+${gv('cg'+sci)} п.п.**\n💎 Рост ценности лида: **+${leadValGrowth.toFixed(1)}%**\n📊 ROI за год: **${Math.round(sel.roi)}%**\n✨ Новая выручка: **${fmtC(sel.newRev)}/мес**${potBlock}${note}`;
+}else if(role==='com'){
+msg=`Расчёт${co} для ${roleName}.\n\n**${scInfo.name}** ${scInfo.sub} — ${scInfo.gen}:\n📈 Рост выручки: **+${revGrowthPct.toFixed(1)}%** (без увеличения штата)\n💰 Новая выручка: **${fmtC(sel.newRev)}/мес**\n📊 ROI за год: **${Math.round(sel.roi)}%**\n✨ Чистый эффект: **+${fmtC(sel.netEff)}/мес**${potBlock}${note}`;
+}
+}else if(tpl==='detailed'){
+// Развёрнутый — все 3 сценария с адаптацией под роль
+let roleAccent='';
+if(role==='own'){
+roleAccent=`\n💼 **Ключевое для собственника:**\n• ROI за год: ${Math.round(sel.roi)}%\n• Окупаемость: ${fmtP(sel.payback)}\n• Годовой эффект: +${fmtC(sel.netEff*12)}`;
+}else if(role==='sal'){
+roleAccent=`\n📞 **Ключевое для РОП / Рук. КЦ:**\n• Рост конверсии: +${gv('cg'+sci)} п.п.\n• Возврат упущенных продаж: ${gv('lr'+sci)}%/мес\n• Прозрачность работы каждого оператора`;
+}else if(role==='mar'){
+roleAccent=`\n📊 **Ключевое для маркетинга:**\n• Рост ценности лида: +${leadValGrowth.toFixed(1)}%\n• Рост конверсии: +${gv('cg'+sci)} п.п.\n• Тот же трафик → больше выручки`;
+}else if(role==='com'){
+roleAccent=`\n💼 **Ключевое для комдира:**\n• Рост выручки без увеличения ФОТ: +${revGrowthPct.toFixed(1)}%\n• Новая выручка: ${fmtC(sel.newRev)}/мес\n• Прирост: +${fmtC(sel.newRev-R.curRev)}/мес`;
+}
+
+msg=`Расчёт ROI${co}.\n\nСценарии отражают уровень вовлечённости вашей команды в работу с данными.\n\n🟢 **Консервативный**${kSc===0?' ←':''} ${SCENARIOS[0].sub} (вероятность ${SCENARIOS[0].prob}):\n_${SCENARIOS[0].gen}_\n  • ${SCENARIOS[0].detail[0]}\n  • ${SCENARIOS[0].detail[1]}\n  • ${SCENARIOS[0].detail[2]}\n• Эффект: +${fmtC(s.cn.netEff)}/мес\n• ROI за год: ${Math.round(s.cn.roi)}%\n• Окупаемость: ${fmtP(s.cn.payback)}\n\n🟣 **Базовый**${kSc===1?' ←':''} ${SCENARIOS[1].sub} (вероятность ${SCENARIOS[1].prob}):\n_${SCENARIOS[1].gen}_\n  • ${SCENARIOS[1].detail[0]}\n  • ${SCENARIOS[1].detail[1]}\n  • ${SCENARIOS[1].detail[2]}\n• Эффект: +${fmtC(s.bs.netEff)}/мес\n• ROI за год: ${Math.round(s.bs.roi)}%\n• Окупаемость: ${fmtP(s.bs.payback)}\n\n🟡 **Оптимистичный**${kSc===2?' ←':''} ${SCENARIOS[2].sub} (вероятность ${SCENARIOS[2].prob}):\n_${SCENARIOS[2].gen}_\n  • ${SCENARIOS[2].detail[0]}\n  • ${SCENARIOS[2].detail[1]}\n  • ${SCENARIOS[2].detail[2]}\n• Эффект: +${fmtC(s.op.netEff)}/мес\n• ROI за год: ${Math.round(s.op.roi)}%\n• Окупаемость: ${fmtP(s.op.payback)}${roleAccent}\n\nРекомендуем ориентироваться на ${scInfo.name.toLowerCase()}.${potBlock}${note}`;
+
+}else if(tpl==='payback'){
+// Фокус на окупаемость с ramp-up
+let rampList=ramp.map(r=>`• Месяц ${r.m} (${r.p}%): +${fmtC(sel.revGr*r.p/100-(r.m>=2?R.lic:0))} → ${paybackData[r.m]?.status||''}`).join('\n');
+
+msg=`⚡ **Окупаемость инвестиций**${co}\n\n**Срок окупаемости: ${fmtP(sel.payback)}** (${scInfo.name.toLowerCase()} — ${scInfo.gen})\n\n💰 **Инвестиции:**\n• Лицензия: ${fmtC(R.lic)}/мес × 12 = ${fmtC(R.licYr)}\n• Внедрение: ${fmtC(R.impl)}\n• **Итого за год: ${fmtC(R.totC)}**\n\n📈 **Как нарастает эффект (${ramp.name.toLowerCase()}):**\n${rampList}\n\n🎯 **После окупаемости** — чистый эффект **+${fmtC(sel.netEff)}/мес**${potBlock}${note}`;
+
+}else if(tpl==='metrics'){
+// Фокус на метрики — адаптирован под роль
+if(role==='own'||role==='com'){
+msg=`📊 **Ключевые метрики**${co}\n\n**Рост выручки без увеличения ФОТ:**\n\nПри текущем штате операторов и том же потоке лидов:\n• Выручка сейчас: **${fmtC(R.curRev)}/мес**\n• Выручка после: **${fmtC(sel.newRev)}/мес**\n• Прирост: **+${fmtC(sel.newRev-R.curRev)}/мес (+${revGrowthPct.toFixed(1)}%)**\n\nДополнительный доход достигается за счёт роста конверсии и среднего чека — без найма новых сотрудников.\n\n📈 **ROI за год: ${Math.round(sel.roi)}%** — на каждый вложенный рубль ${(sel.roi/100+1).toFixed(1)} ₽ возврата.\n\n💰 **Финансовый итог:**\n• Чистый эффект: **+${fmtC(sel.netEff)}/мес**\n• Эффект за год: **+${fmtC(sel.netEff*12)}**\n• Окупаемость: **${fmtP(sel.payback)}**${potBlock}${note}`;
+}else if(role==='sal'){
+msg=`📊 **Ключевые метрики для РОП / Рук. КЦ**${co}\n\n**Конверсия:**\n• Было: ${R.conv}%\n• Станет: ${sel.newConv.toFixed(1)}%\n• Рост: +${gv('cg'+sci)} п.п.\n\n**Качество работы операторов:**\n• Автоматический контроль 100% коммуникаций\n• Выявление ошибок и точек роста\n• Персональные рекомендации по обучению\n\n**Возврат упущенных продаж:** ${gv('lr'+sci)}%/мес${sel.trSav?'\n\n**Экономия на адаптации новичков:** '+fmtC(sel.trSav)+'/мес':''}\n\n✨ Эффект: **+${fmtC(sel.netEff)}/мес**${potBlock}${note}`;
+}else if(role==='mar'){
+msg=`📊 **Ключевые метрики для маркетинга**${co}\n\n**Ценность лида:**\n• Было: ${fmtC(oldLeadVal)}/лид\n• Станет: ${fmtC(newLeadVal)}/лид\n• Рост: **+${leadValGrowth.toFixed(1)}%**\n\n**Конверсия:**\n• Было: ${R.conv}%\n• Станет: ${sel.newConv.toFixed(1)}%\n• Рост: +${gv('cg'+sci)} п.п.\n\n**Эффективность воронки:**\nТот же трафик → больше выручки: **+${fmtC(sel.newRev-R.curRev)}/мес**\n\n📈 ROI за год: **${Math.round(sel.roi)}%**${potBlock}${note}`;
+}
+}else if(tpl==='tariff'){
+const dp=t.p*(1-d);
+msg=`Полный расчёт${co}:\n\n**Тариф:** ${t.n} (${fmt(t.m)} мин)\n**Цена:** ${fmtC(dp)}/мес${d?' (−'+d*100+'%)':''}\n**Внедрение:** ${fmtC(R.impl)}\n**Итого за год:** ${fmtC(R.totC)}\n\n**${scInfo.name}** ${scInfo.sub} — ${scInfo.gen}:\n• Эффект: +${fmtC(sel.netEff)}/мес\n• ROI за год: ${Math.round(sel.roi)}%\n• Окупаемость: ${fmtP(sel.payback)}\n• За год: +${fmtC(sel.netEff*12)}${potBlock}${note}`;
+}
+
+// Personalization overlay
+if(painData.pains.length>0){
+let pMsg='';
+painData.pains.forEach(p=>{
+if(PAIN_HOOKS[p])pMsg+=PAIN_HOOKS[p](painData.context,role)+'\n\n';
+});
+if(painData.tried.length>0){
+pMsg+='\n**Почему предыдущие подходы не дали результата:**\n';
+painData.tried.forEach(t=>{if(TRIED_COUNTER[t])pMsg+=TRIED_COUNTER[t]+'\n';});
+pMsg+='\n';
+}
+if(painData.expectation){
+if(painData.expectation==='proof'){
+const bsc=R.sc[kSc];
+pMsg+=`\n**Для презентации руководству:** ROI ${Math.round(bsc.roi)}%, окупаемость ${fmtP(bsc.payback)}, на каждый вложенный рубль — ${(bsc.roi/100+1).toFixed(1)} ₽ возврата.`;
+}else if(EXPECT_CLOSE[painData.expectation]){
+pMsg+='\n'+EXPECT_CLOSE[painData.expectation];
+}
+}
+const kd=buildKd(R.sc[kSc]);
+const cfg=RC[role];
+let growthPts='';
+painData.pains.forEach(p=>{
+const rel=PAIN_REL[p];if(!rel)return;
+const pain=PAINS[p];
+const vals=rel.metrics.filter(m=>cfg.k.includes(m)||kd[m]).map(m=>kd[m]?kd[m].l+': **'+kd[m].v+'**':'').filter(Boolean).join(', ');
+if(vals)growthPts+='\n'+pain.icon+' **'+pain.label+'** → '+rel.lever+' ('+vals+')';
+});
+if(growthPts)pMsg+='\n\n**🎯 Ваши точки роста:**'+growthPts;
+msg=pMsg.trim()+'\n\n---\n\n'+msg;
+}
+document.getElementById('mOut').value=msg;
+}
+
+// Pain wizard
+function openWz(){
+wzStep=0;
+renWz();
+document.getElementById('wzOv').classList.add('vis');
+}
+
+function closeWz(){
+document.getElementById('wzOv').classList.remove('vis');
+}
+
+function wzNext(skip){
+if(wzStep===0&&!skip&&painData.pains.length===0)return;
+if(wzStep<3){wzStep++;renWz();}
+else{closeWz();updPainTag();applyPainFill();genM();}
+}
+
+function wzBack(){
+if(wzStep>0){wzStep--;renWz();}
+}
+
+function renWz(){
+const prog=document.getElementById('wzProg');
+const labels=['Боли','Контекст','Пробовали','Ожидания'];
+prog.innerHTML=labels.map((l,i)=>{
+const cls=i<wzStep?'done':i===wzStep?'active':'';
+return (i>0?'<div class="wz-line'+(i<=wzStep?' done':'')+'"></div>':'')+`<div class="wz-dot ${cls}"></div>`;
+}).join('');
+
+const body=document.getElementById('wzBody');
+if(wzStep===0)renWzPains(body);
+else if(wzStep===1)renWzCtx(body);
+else if(wzStep===2)renWzTried(body);
+else renWzExpect(body);
+
+const skipBtn=document.getElementById('wzSkip');
+const nextBtn=document.getElementById('wzNext');
+if(wzStep===0){
+skipBtn.style.display='none';
+nextBtn.textContent='Далее →';
+nextBtn.disabled=painData.pains.length===0;
+}else if(wzStep===3){
+skipBtn.style.display='inline-block';
+skipBtn.textContent='Пропустить';
+skipBtn.onclick=function(){closeWz();updPainTag();applyPainFill();genM();};
+nextBtn.textContent='Готово → Сгенерировать';
+nextBtn.disabled=false;
+}else{
+skipBtn.style.display='inline-block';
+skipBtn.textContent='Пропустить';
+skipBtn.onclick=function(){wzNext(true);};
+nextBtn.textContent='Далее →';
+nextBtn.disabled=false;
+}
+}
+
+function renWzPains(body){
+body.innerHTML='<div class="wz-q">Что беспокоит клиента больше всего? (выберите 1-2)</div><div class="pain-grid">'+
+Object.entries(PAINS).map(([k,v])=>`<button class="pain-btn${painData.pains.includes(k)?' sel':''}" onclick="togPain('${k}')"><div class="pain-ic">${v.icon}</div><div class="pain-lb">${v.label}</div></button>`).join('')+'</div>';
+}
+
+function togPain(k){
+const i=painData.pains.indexOf(k);
+if(i>=0)painData.pains.splice(i,1);
+else if(painData.pains.length<2)painData.pains.push(k);
+renWz();
+}
+
+function renWzCtx(body){
+if(painData.pains.length===0){body.innerHTML='<div class="wz-q">Сначала выберите боли на предыдущем шаге</div>';return;}
+let html='<div class="wz-q">Уточняющие вопросы</div>';
+painData.pains.forEach(p=>{
+const qs=PAIN_CTX[p];
+if(!qs)return;
+html+=`<div style="margin-bottom:4px;font-weight:500;font-size:12px">${PAINS[p].icon} ${PAINS[p].label}</div>`;
+qs.forEach(q=>{
+const key=p+'_'+q.k;
+html+=`<div class="ctx-group"><label>${q.q}</label><div class="ctx-opts">${q.opts.map(o=>`<button class="ctx-opt${painData.context[key]===o?' sel':''}" onclick="selCtx('${key}',this.textContent)">${o}</button>`).join('')}</div></div>`;
+});
+});
+body.innerHTML=html;
+}
+
+function selCtx(key,val){
+painData.context[key]=val;
+renWz();
+}
+
+function renWzTried(body){
+body.innerHTML='<div class="wz-q">Что уже пробовали?</div><div class="tried-grid">'+
+TRIED_OPTS.map(t=>`<button class="tried-btn${painData.tried.includes(t.k)?' sel':''}" onclick="togTried('${t.k}')">${t.label}</button>`).join('')+'</div>';
+}
+
+function togTried(k){
+const i=painData.tried.indexOf(k);
+if(i>=0)painData.tried.splice(i,1);
+else painData.tried.push(k);
+renWz();
+}
+
+function renWzExpect(body){
+body.innerHTML='<div class="wz-q">Что важнее для клиента?</div><div class="exp-grid">'+
+EXPECT_OPTS.map(e=>`<button class="exp-btn${painData.expectation===e.k?' sel':''}" onclick="selExp('${e.k}')"><div class="exp-t">${e.label}</div><div class="exp-d">${e.desc}</div></button>`).join('')+'</div>';
+}
+
+function selExp(k){
+painData.expectation=painData.expectation===k?null:k;
+renWz();
+}
+
+function updPainTag(){
+const el=document.getElementById('painTag');
+if(painData.pains.length===0){el.innerHTML='';return;}
+const labels=painData.pains.map(p=>PAINS[p].icon+' '+PAINS[p].label).join(', ');
+el.innerHTML=`<div class="pain-tag">🎯 ${labels}<button class="pain-reset" onclick="resetPain()">✕</button></div>`;
+}
+
+function applyPainFill(){
+const secs=new Set();
+painData.pains.forEach(p=>{const rel=PAIN_REL[p];if(rel&&rel.section)secs.add(rel.section);});
+secs.forEach(sec=>{
+const fill=PAIN_FILL[sec];if(!fill)return;
+Object.entries(fill).forEach(([id,val])=>{
+const el=document.getElementById(id);
+if(el&&(!el.value||parseFloat(el.value)===0))el.value=val;
+});
+const s=S[sec];
+if(s){document.getElementById(s.h).classList.add('op');document.getElementById(s.c).classList.add('op');}
+});
+if(secs.size)updAS();
+calc();
+}
+
+function resetPain(){
+painData={pains:[],context:{},tried:[],expectation:null};
+document.getElementById('painTag').innerHTML='';
+updK();
+}
+
+function cpM(){document.getElementById('mOut').select();document.execCommand('copy');const t=document.getElementById('tst');t.classList.add('sh');setTimeout(()=>t.classList.remove('sh'),2000);}
+
+function exportPDF(){
+const pdf=document.getElementById('pdfContent');
+const comp=document.getElementById('comp').value||'';
+const today=new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
+
+// Header
+document.getElementById('pdfComp').textContent=comp?'Расчёт для '+comp:'Расчёт ROI';
+document.getElementById('pdfDate').textContent=today;
+
+// Summary: входные данные лаконично
+const lic=getLic(),impl=getImpl();
+const periodLabel=sP===1?'1 мес':sP+' мес (−'+D[sP]*100+'%)';
+document.getElementById('pdfSummary').innerHTML=
+'<div class="pdf-si"><div class="pdf-sl">Обращений/мес</div><div class="pdf-sv">'+fmt(R.leads)+'</div></div>'+
+'<div class="pdf-si"><div class="pdf-sl">Конверсия</div><div class="pdf-sv">'+R.conv+'%</div></div>'+
+'<div class="pdf-si"><div class="pdf-sl">Средний чек</div><div class="pdf-sv">'+fmtC(R.chk)+'</div></div>'+
+'<div class="pdf-si"><div class="pdf-sl">Тариф</div><div class="pdf-sv">'+T[sT].n+' / '+periodLabel+'</div></div>'+
+'<div class="pdf-si"><div class="pdf-sl">Лицензия/мес</div><div class="pdf-sv">'+fmtC(lic)+'</div></div>'+
+'<div class="pdf-si"><div class="pdf-sl">Внедрение</div><div class="pdf-sv">'+fmtC(impl)+'</div></div>'+
+'<div class="pdf-si"><div class="pdf-sl">Инвестиции за год</div><div class="pdf-sv">'+fmtC(R.totC)+'</div></div>';
+
+// Priority scenario label
+const scFullNames=['Консервативный','Базовый','Оптимистичный'];
+document.getElementById('pdfScLabel').textContent='Приоритетный сценарий: '+scFullNames[kSc]+' — '+SCENARIOS[kSc].sub;
+
+// Role metrics
+const cfg=RC[role],s=R.sc[kSc],kd=buildKd(s);
+document.getElementById('pdfRoleTitle').textContent=cfg.t;
+document.getElementById('pdfMetrics').innerHTML=cfg.k.map(k=>
+'<div class="pdf-mi '+cfg.c+'"><div class="pdf-ml">'+kd[k].l+'</div><div class="pdf-mv">'+kd[k].v+'</div></div>'
+).join('');
+
+// Pain growth block
+const painEl=document.getElementById('pdfPainSection');
+if(painData.pains.length>0&&R.sc&&R.sc.length){
+painEl.style.display='block';
+let painHtml='';
+painData.pains.forEach(p=>{
+const rel=PAIN_REL[p];if(!rel)return;
+const pain=PAINS[p];
+const vals=rel.metrics.filter(m=>cfg.k.includes(m)||kd[m]).map(m=>kd[m]?'<span>'+kd[m].l+': <b>'+kd[m].v+'</b></span>':'').filter(Boolean).join('');
+painHtml+='<div class="pdf-pain-item">'+pain.icon+' <b>'+pain.label+'</b> → '+rel.lever+(vals?'<div class="pdf-pain-mv">'+vals+'</div>':'')+'</div>';
+});
+document.getElementById('pdfPainGrowth').innerHTML=painHtml;
+}else{
+painEl.style.display='none';
+}
+
+// Scenarios (highlight selected)
+const scNames=['cn','bs','op'],scLabels=['Консервативный','Базовый','Оптимистичный'],scProbs=['70–80%','~50%','20–30%'];
+document.getElementById('pdfScenarios').innerHTML=R.sc.map((sc,i)=>{
+const sel=i===kSc?' pdf-sc-sel':'';
+const tag=i===kSc?' ★':'';
+return '<div class="pdf-sc '+scNames[i]+sel+'"><div class="pdf-scn">'+scLabels[i]+tag+'</div><div class="pdf-scv">+'+fmtC(sc.netEff)+'</div><div class="pdf-scs">эффект/мес</div><div class="pdf-scd">ROI: '+Math.round(sc.roi)+'% · '+fmtP(sc.payback)+'</div><div class="pdf-scd">Вероятность: '+scProbs[i]+'</div></div>';
+}).join('');
+
+// Scenario labels for dynamic titles
+const scLabelShort=['консервативный','базовый','оптимистичный'][kSc];
+document.getElementById('pdfCmpTitle').textContent='До / После ('+scLabelShort+')';
+document.getElementById('pdfChartTitle').textContent='Окупаемость по месяцам ('+scLabelShort+')';
+
+// Comparison (selected scenario)
+const selSc=R.sc[kSc];
+document.getElementById('pdfCmp').innerHTML=
+'<div class="pdf-ci bf"><div class="pdf-cl">Конверсия до</div><div class="pdf-cv">'+R.conv+'%</div></div>'+
+'<div class="pdf-ci af"><div class="pdf-cl">Конверсия после</div><div class="pdf-cv">'+selSc.newConv.toFixed(1)+'%</div><div class="pdf-cd">+'+gv('cg'+(kSc+1))+' п.п.</div></div>'+
+'<div class="pdf-ci bf"><div class="pdf-cl">Выручка/мес до</div><div class="pdf-cv">'+fmtC(R.curRev)+'</div></div>'+
+'<div class="pdf-ci af"><div class="pdf-cl">Выручка/мес после</div><div class="pdf-cv">'+fmtC(selSc.newRev)+'</div><div class="pdf-cd">+'+((selSc.newRev-R.curRev)/R.curRev*100).toFixed(1)+'%</div></div>';
+
+// Message (if generated) — strip markdown to clean text
+const msgVal=document.getElementById('mOut').value;
+if(msgVal&&msgVal.trim()&&!msgVal.startsWith('Нажмите')){
+document.getElementById('pdfMsgSection').style.display='block';
+const cleanMsg=msgVal
+.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')
+.replace(/\*(.+?)\*/g,'<i>$1</i>')
+.replace(/_(.+?)_/g,'<i>$1</i>')
+.replace(/^---$/gm,'<hr style="border:none;border-top:1px solid #e5e7eb;margin:8px 0">')
+.replace(/^• /gm,'&bull; ')
+.replace(/\n/g,'<br>');
+document.getElementById('pdfMsg').innerHTML=cleanMsg;
+}else{
+document.getElementById('pdfMsgSection').style.display='none';
+}
+
+// Render chart for PDF (selected scenario)
+const pdfCanvas=document.getElementById('pdfChart');
+pdfCanvas.width=760;pdfCanvas.height=160;
+const targetEff=selSc.revGr;
+const ramp=RAMP[bizSize].sc[kSc];
+const data=[];
+let cum=-R.impl-R.lic;
+data.push({x:0,y:Math.round(cum)});
+for(let m=1;m<=12;m++){
+let pct=100;
+const rm=ramp.find(r=>r.m===m);
+if(rm)pct=rm.p;
+else if(m<ramp[0].m)pct=0;
+cum+=targetEff*(pct/100)-(m>=2?R.lic:0);
+data.push({x:m,y:Math.round(cum)});
+}
+const pdfChartInstance=new Chart(pdfCanvas,{
+type:'line',
+data:{labels:data.map(d=>'М'+d.x),datasets:[{data:data.map(d=>d.y),borderColor:'#B37FEB',backgroundColor:'rgba(179,127,235,0.1)',fill:true,tension:0.3,pointRadius:3,pointBackgroundColor:'#B37FEB',pointBorderColor:'#fff',pointBorderWidth:2}]},
+options:{responsive:false,animation:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{y:{ticks:{callback:v=>fmt(v)+'₽',font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},x:{grid:{display:false},ticks:{font:{size:10}}}}}
+});
+
+// Show offscreen, render, hide
+pdf.classList.add('pdf-vis');
+setTimeout(()=>{
+html2canvas(pdf,{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false}).then(canvas=>{
+pdf.classList.remove('pdf-vis');
+pdfChartInstance.destroy();
+
+const imgData=canvas.toDataURL('image/jpeg',0.95);
+const {jsPDF}=window.jspdf;
+const doc=new jsPDF('p','mm','a4');
+const pageW=210,pageH=297,margin=0;
+const imgW=pageW-margin*2;
+const imgH=canvas.height*imgW/canvas.width;
+
+if(imgH<=pageH){
+doc.addImage(imgData,'JPEG',margin,0,imgW,imgH);
+}else{
+// Multi-page
+let srcY=0;
+const sliceHPx=canvas.width*(pageH/imgW);
+while(srcY<canvas.height){
+const sliceH=Math.min(sliceHPx,canvas.height-srcY);
+const sliceCanvas=document.createElement('canvas');
+sliceCanvas.width=canvas.width;
+sliceCanvas.height=sliceH;
+sliceCanvas.getContext('2d').drawImage(canvas,0,srcY,canvas.width,sliceH,0,0,canvas.width,sliceH);
+const sliceImg=sliceCanvas.toDataURL('image/jpeg',0.95);
+const sliceImgH=sliceH*imgW/canvas.width;
+if(srcY>0)doc.addPage();
+doc.addImage(sliceImg,'JPEG',margin,0,imgW,sliceImgH);
+srcY+=sliceH;
+}
+}
+const fileName='ROI_imotio'+(comp?'_'+comp.replace(/[^a-zA-Zа-яА-ЯёЁ0-9]/g,'_'):'')+'_'+new Date().toISOString().slice(0,10)+'.pdf';
+doc.save(fileName);
+});
+},100);
+}
+
+init();
+</script>
+</body>
+</html>
